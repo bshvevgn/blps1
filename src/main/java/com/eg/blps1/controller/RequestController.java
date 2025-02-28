@@ -6,12 +6,14 @@ import com.eg.blps1.model.User;
 import com.eg.blps1.repository.RequestRepository;
 import com.eg.blps1.repository.UserRepository;
 import com.eg.blps1.service.RequestService;
+import com.eg.blps1.service.SanctionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -22,6 +24,7 @@ public class RequestController {
     private final RequestService requestService;
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
+    private final SanctionService sanctionService;
 
 
     @PostMapping("/create")
@@ -61,7 +64,16 @@ public class RequestController {
 
     @PostMapping("/update-status")
     public ResponseEntity<SanctionRequest> updateStatus(@RequestParam Long requestId,
-                                                        @RequestParam RequestStatus status) {
+                                                        @RequestParam RequestStatus status,
+                                                        @RequestParam Long userId,  // ID пользователя, к которому применяется санкция
+                                                        @RequestParam String expiresAt) {  // Время действия санкции
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+
+        if (status == RequestStatus.APPROVED) {
+            LocalDateTime expirationTime = LocalDateTime.parse(expiresAt);
+            sanctionService.imposeSanction(user, "Заявка принята, санкция наложена.", expirationTime);
+        }
+
         SanctionRequest updated = requestService.updateRequestStatus(requestId, status);
         return ResponseEntity.ok(updated);
     }

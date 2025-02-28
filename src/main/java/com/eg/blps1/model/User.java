@@ -1,5 +1,6 @@
 package com.eg.blps1.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,9 +28,17 @@ public class User implements UserDetails {
 
     private boolean isLandlord;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user")
+    private List<Sanction> sanctions;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(() -> "ROLE_" + role.name()); // Преобразуем enum в роль
+    }
+
+    public boolean hasActiveSanction() {
+        return sanctions.stream().anyMatch(Sanction::isActive);
     }
 
     @Override
