@@ -2,10 +2,14 @@ package com.eg.blps1.controller;
 
 import com.eg.blps1.model.RequestStatus;
 import com.eg.blps1.model.SanctionRequest;
+import com.eg.blps1.model.User;
+import com.eg.blps1.repository.RequestRepository;
+import com.eg.blps1.repository.UserRepository;
 import com.eg.blps1.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,22 +20,38 @@ import java.util.List;
 public class RequestController {
 
     private final RequestService requestService;
+    private final UserRepository userRepository;
+    private final RequestRepository requestRepository;
 
-    // Создать новую заявку (доступно любому авторизованному пользователю)
+
     @PostMapping("/create")
-    public ResponseEntity<SanctionRequest> createRequest(@RequestParam String description) {
+    public ResponseEntity<?> createRequest(@RequestParam String description) {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        SanctionRequest newRequest = requestService.createRequest(description, currentUsername);
-        return ResponseEntity.ok(newRequest);
+
+        User user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + currentUsername));
+
+        long activeRequestsCount = requestRepository.countByCreatedByAndStatusIn(
+                user, List.of(RequestStatus.CREATED, RequestStatus.UNDER_REVIEW));
+
+        if (activeRequestsCount >= 5) {
+            return ResponseEntity.status(403).body("Вы не можете создать новую заявку, пока у вас есть 5 активных заявок.");
+        }
+
+        SanctionRequest request = new SanctionRequest();
+        request.setCreatedBy(user);
+        request.setDescription(description);
+        request.setStatus(RequestStatus.CREATED);
+
+        requestRepository.save(request);
+        return ResponseEntity.ok(request);
     }
 
-    // Получить все заявки (например, для модератора)
     @GetMapping
     public ResponseEntity<List<SanctionRequest>> getAllRequests() {
         return ResponseEntity.ok(requestService.getAllRequests());
     }
 
-    // Модератор назначает заявку на себя
     @PostMapping("/assign")
     public ResponseEntity<SanctionRequest> assignRequest(@RequestParam Long requestId) {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -39,7 +59,6 @@ public class RequestController {
         return ResponseEntity.ok(assigned);
     }
 
-    // Модератор обновляет статус заявки (APPROVED, REJECTED и т.д.)
     @PostMapping("/update-status")
     public ResponseEntity<SanctionRequest> updateStatus(@RequestParam Long requestId,
                                                         @RequestParam RequestStatus status) {

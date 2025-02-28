@@ -36,7 +36,6 @@ public class AuthController {
         try {
             authenticationManager.authenticate(authToken);
 
-            // Генерация JWT-токена
             String token = jwtUtil.generateToken(username);
 
             return ResponseEntity.ok(token);
