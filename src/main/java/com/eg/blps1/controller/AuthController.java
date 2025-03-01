@@ -1,5 +1,7 @@
 package com.eg.blps1.controller;
 
+import com.eg.blps1.dto.LoginRequest;
+import com.eg.blps1.dto.RegisterRequest;
 import com.eg.blps1.model.Role;
 import com.eg.blps1.service.UserService;
 import com.eg.blps1.utils.JwtUtil;
@@ -20,24 +22,18 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestParam String username,
-                                           @RequestParam String password,
-                                           @RequestParam(required = false, defaultValue = "USER") Role role,
-                                           @RequestParam(required = false, defaultValue = "false") boolean isLandlord) {
-        userService.register(username, password, role, isLandlord);
+    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+        userService.register(request.getUsername(), request.getPassword(), request.getRole(), request.isLandlord());
         return ResponseEntity.ok("Пользователь зарегистрирован");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String username,
-                                        @RequestParam String password) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
         UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(username, password);
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
         try {
             authenticationManager.authenticate(authToken);
-
-            String token = jwtUtil.generateToken(username);
-
+            String token = jwtUtil.generateToken(request.getUsername());
             return ResponseEntity.ok(token);
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(401).body("Неверный логин или пароль");

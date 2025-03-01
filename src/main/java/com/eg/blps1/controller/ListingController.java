@@ -1,5 +1,6 @@
 package com.eg.blps1.controller;
 
+import com.eg.blps1.dto.ListingRequest;
 import com.eg.blps1.model.Listing;
 import com.eg.blps1.model.User;
 import com.eg.blps1.repository.ListingRepository;
@@ -20,9 +21,7 @@ public class ListingController {
     private final SanctionService sanctionService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createListing(@RequestParam String address,
-                                                @RequestParam double price,
-                                                @RequestParam String note) {
+    public ResponseEntity<String> createListing(@RequestBody ListingRequest request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
 
@@ -34,7 +33,7 @@ public class ListingController {
             return ResponseEntity.status(403).body("Вы не можете размещать объявления из-за санкции.");
         }
 
-        Listing listing = new Listing(address, price, note, user);
+        Listing listing = new Listing(request.getAddress(), request.getPrice(), request.getNote(), user);
         listingRepository.save(listing);
 
         return ResponseEntity.ok("Объявление размещено.");

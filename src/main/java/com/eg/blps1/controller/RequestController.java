@@ -1,5 +1,8 @@
 package com.eg.blps1.controller;
 
+import com.eg.blps1.dto.AssignRequestDto;
+import com.eg.blps1.dto.CreateRequestDto;
+import com.eg.blps1.dto.UpdateStatusDto;
 import com.eg.blps1.model.RequestStatus;
 import com.eg.blps1.model.SanctionRequest;
 import com.eg.blps1.model.User;
@@ -26,11 +29,9 @@ public class RequestController {
     private final RequestRepository requestRepository;
     private final SanctionService sanctionService;
 
-
     @PostMapping("/create")
-    public ResponseEntity<?> createRequest(@RequestParam String description) {
+    public ResponseEntity<?> createRequest(@RequestBody CreateRequestDto requestDto) {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-
         User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + currentUsername));
 
@@ -43,7 +44,7 @@ public class RequestController {
 
         SanctionRequest request = new SanctionRequest();
         request.setCreatedBy(user);
-        request.setDescription(description);
+        request.setDescription(requestDto.getDescription());
         request.setStatus(RequestStatus.CREATED);
 
         requestRepository.save(request);
@@ -56,25 +57,23 @@ public class RequestController {
     }
 
     @PostMapping("/assign")
-    public ResponseEntity<SanctionRequest> assignRequest(@RequestParam Long requestId) {
+    public ResponseEntity<SanctionRequest> assignRequest(@RequestBody AssignRequestDto assignRequestDto) {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        SanctionRequest assigned = requestService.assignRequest(requestId, currentUsername);
+        SanctionRequest assigned = requestService.assignRequest(assignRequestDto.getRequestId(), currentUsername);
         return ResponseEntity.ok(assigned);
     }
 
     @PostMapping("/update-status")
-    public ResponseEntity<SanctionRequest> updateStatus(@RequestParam Long requestId,
-                                                        @RequestParam RequestStatus status,
-                                                        @RequestParam Long userId,  // ID пользователя, к которому применяется санкция
-                                                        @RequestParam String expiresAt) {  // Время действия санкции
-        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+    public ResponseEntity<SanctionRequest> updateStatus(@RequestBody UpdateStatusDto updateStatusDto) {
+        User user = userRepository.findById(updateStatusDto.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
 
-        if (status == RequestStatus.APPROVED) {
-            LocalDateTime expirationTime = LocalDateTime.parse(expiresAt);
+        if (updateStatusDto.getStatus() == RequestStatus.APPROVED) {
+            LocalDateTime expirationTime = LocalDateTime.parse(updateStatusDto.getExpiresAt());
             sanctionService.imposeSanction(user, "Заявка принята, санкция наложена.", expirationTime);
         }
 
-        SanctionRequest updated = requestService.updateRequestStatus(requestId, status);
+        SanctionRequest updated = requestService.updateRequestStatus(updateStatusDto.getRequestId(), updateStatusDto.getStatus());
         return ResponseEntity.ok(updated);
     }
 }
