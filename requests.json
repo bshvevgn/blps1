@@ -1,0 +1,397 @@
+{
+	"info": {
+		"_postman_id": "0bce60b8-1162-4db7-996c-287fe5a2fbba",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31256664"
+	},
+	"item": [
+		{
+			"name": "localhost:8080/auth/register?username=landlord&password=1838&role=USER&isLandlord=true",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/auth/register?username=landlord&password=1838&role=USER&isLandlord=true",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"register"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "landlord"
+						},
+						{
+							"key": "password",
+							"value": "1838"
+						},
+						{
+							"key": "role",
+							"value": "USER"
+						},
+						{
+							"key": "isLandlord",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/auth/login?username=bshvevgn&password=1838",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/auth/login?username=bshvevgn&password=1838",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "bshvevgn"
+						},
+						{
+							"key": "password",
+							"value": "1838"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/bookings/create?listingId=1",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzQwNzY1OTI4LCJleHAiOjE3NDA3Njk1Mjh9.lGMjAnyZI3ttdklBupqPOR1v0p-9XHZ8OzBQpAG2dYM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/bookings/create?listingId=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bookings",
+						"create"
+					],
+					"query": [
+						{
+							"key": "listingId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/listings/create?address=Санкт-Петербург, Приморский проспект, 78, 12&price=3200&note=Видовые апартаменты",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsYW5kbG9yZCIsImlhdCI6MTc0MDc2NTg1NCwiZXhwIjoxNzQwNzY5NDU0fQ.AFGPoqFo432fafDDc3P7EvcEIAiQcE9-rjqzJwCfh2o",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/listings/create?address=Санкт-Петербург, Приморский проспект, 78, 12&price=3200&note=Видовые апартаменты",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"listings",
+						"create"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "Санкт-Петербург, Приморский проспект, 78, 12"
+						},
+						{
+							"key": "price",
+							"value": "3200"
+						},
+						{
+							"key": "note",
+							"value": "Видовые апартаменты"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/requests",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDc2NDUwMSwiZXhwIjoxNzQwNzY4MTAxfQ.DDkeiN6GY0c6gqrcutu4Hm_NM9gGDEuCAl-R79nPl2U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/requests",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/requests/update-status?requestId=7&status=APPROVED&userId=2&expiresAt=2025-03-10T12:00:00 Copy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDc2NDU5OSwiZXhwIjoxNzQwNzY4MTk5fQ.urdUEmYgjXPqvg2E91dYARKBXAuNn1QvmlRucaMB2pc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzQwNzU5NDYwLCJleHAiOjE3NDA3NjMwNjB9.cxsQFgBuThPrZWXGFNqCAopAl6AVcUPVc2b-gHxHypA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/requests/create?description=Тестовая заявка",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"requests",
+						"create"
+					],
+					"query": [
+						{
+							"key": "description",
+							"value": "Тестовая заявка"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/requests/assign?requestId=1",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDY4MTU0MCwiZXhwIjoxNzQwNjg1MTQwfQ.r61JBEJvQ-ditUWs-mHfTHQ0Dl717Kfa1wv--1i92kU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/requests/assign?requestId=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"requests",
+						"assign"
+					],
+					"query": [
+						{
+							"key": "requestId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/requests/update-status?requestId=7&status=APPROVED&userId=2&expiresAt=2025-03-10T12:00:00",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDc2NDU5OSwiZXhwIjoxNzQwNzY4MTk5fQ.urdUEmYgjXPqvg2E91dYARKBXAuNn1QvmlRucaMB2pc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzQwNzU5NDYwLCJleHAiOjE3NDA3NjMwNjB9.cxsQFgBuThPrZWXGFNqCAopAl6AVcUPVc2b-gHxHypA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/requests/update-status?requestId=7&status=APPROVED&userId=2&expiresAt=2025-03-10T12:00:00",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"requests",
+						"update-status"
+					],
+					"query": [
+						{
+							"key": "requestId",
+							"value": "7"
+						},
+						{
+							"key": "status",
+							"value": "APPROVED"
+						},
+						{
+							"key": "userId",
+							"value": "2"
+						},
+						{
+							"key": "expiresAt",
+							"value": "2025-03-10T12:00:00"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sanctions/remove?username=user Copy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDc2NjIyMCwiZXhwIjoxNzQwNzY5ODIwfQ.lSpl2RKFoVIJCRERC1mjw4uiB5SgPH05OBndxChqAGQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/sanctions/impose?username=user&reason=Причина&expiresAt=2025-03-10T12:00:00",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sanctions",
+						"impose"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "user"
+						},
+						{
+							"key": "reason",
+							"value": "Причина"
+						},
+						{
+							"key": "expiresAt",
+							"value": "2025-03-10T12:00:00"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sanctions/remove?username=user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDc2NjIyMCwiZXhwIjoxNzQwNzY5ODIwfQ.lSpl2RKFoVIJCRERC1mjw4uiB5SgPH05OBndxChqAGQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/sanctions/remove?username=user",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sanctions",
+						"remove"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "user"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

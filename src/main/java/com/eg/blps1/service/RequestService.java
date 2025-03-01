@@ -18,28 +18,19 @@ public class RequestService {
     private final EmailService emailService;
     private final RequestRepository requestRepository;
 
-    /**
-     * Создать новую заявку
-     */
     public SanctionRequest createRequest(String description, String creatorUsername) {
         User creator = userService.findByUsername(creatorUsername);
         SanctionRequest request = new SanctionRequest();
         request.setDescription(description);
         request.setCreatedBy(creator);
-        // Поля createdAt и status установятся в @PrePersist
+
         return requestRepository.save(request);
     }
 
-    /**
-     * Получить все заявки
-     */
     public List<SanctionRequest> getAllRequests() {
         return requestRepository.findAll();
     }
 
-    /**
-     * Модератор назначает заявку на себя
-     */
     public SanctionRequest assignRequest(Long requestId, String moderatorUsername) {
         SanctionRequest request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Заявка не найдена"));

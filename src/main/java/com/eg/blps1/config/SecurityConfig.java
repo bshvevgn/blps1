@@ -65,7 +65,6 @@ public class SecurityConfig {
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Role role) {
-        // Роль превращаем в SimpleGrantedAuthority
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
