@@ -8,39 +8,42 @@
 	"item": [
 		{
 			"name": "localhost:8080/auth/register?username=landlord&password=1838&role=USER&isLandlord=true",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
 				},
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"test3\",\n    \"password\": \"1838\",\n    \"role\": \"USER\",\n    \"isLandlord\": \"true\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/auth/register?username=landlord&password=1838&role=USER&isLandlord=true",
+					"raw": "{{base_url}}/auth/register",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"auth",
 						"register"
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "landlord"
-						},
-						{
-							"key": "password",
-							"value": "1838"
-						},
-						{
-							"key": "role",
-							"value": "USER"
-						},
-						{
-							"key": "isLandlord",
-							"value": "true"
-						}
 					]
 				}
 			},
@@ -48,31 +51,44 @@
 		},
 		{
 			"name": "localhost:8080/auth/login?username=bshvevgn&password=1838",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"var token = jsonResponse.token;",
+							"",
+							"pm.environment.set(\"auth_token\", token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
 				},
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"bshvevgn\",\n    \"password\": \"1838\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/auth/login?username=bshvevgn&password=1838",
+					"raw": "{{base_url}}/auth/login",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"auth",
 						"login"
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "bshvevgn"
-						},
-						{
-							"key": "password",
-							"value": "1838"
-						}
 					]
 				}
 			},
@@ -86,28 +102,30 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzQwNzY1OTI4LCJleHAiOjE3NDA3Njk1Mjh9.lGMjAnyZI3ttdklBupqPOR1v0p-9XHZ8OzBQpAG2dYM",
+							"value": "{{auth_token}}",
 							"type": "string"
 						}
 					]
 				},
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"listingId\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/bookings/create?listingId=1",
+					"raw": "{{base_url}}/bookings/create",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"bookings",
 						"create"
-					],
-					"query": [
-						{
-							"key": "listingId",
-							"value": "1"
-						}
 					]
 				}
 			},
@@ -121,36 +139,30 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsYW5kbG9yZCIsImlhdCI6MTc0MDc2NTg1NCwiZXhwIjoxNzQwNzY5NDU0fQ.AFGPoqFo432fafDDc3P7EvcEIAiQcE9-rjqzJwCfh2o",
+							"value": "{{auth_token}}",
 							"type": "string"
 						}
 					]
 				},
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"Санкт-Петербург, Приморский проспект, 78, 12\",\n    \"price\": 3200,\n    \"note\": \"Видовые апартаменты\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/listings/create?address=Санкт-Петербург, Приморский проспект, 78, 12&price=3200&note=Видовые апартаменты",
+					"raw": "{{base_url}}/listings/create",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"listings",
 						"create"
-					],
-					"query": [
-						{
-							"key": "address",
-							"value": "Санкт-Петербург, Приморский проспект, 78, 12"
-						},
-						{
-							"key": "price",
-							"value": "3200"
-						},
-						{
-							"key": "note",
-							"value": "Видовые апартаменты"
-						}
 					]
 				}
 			},
@@ -164,7 +176,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDc2NDUwMSwiZXhwIjoxNzQwNzY4MTAxfQ.DDkeiN6GY0c6gqrcutu4Hm_NM9gGDEuCAl-R79nPl2U",
+							"value": "{{auth_token}}",
 							"type": "string"
 						}
 					]
@@ -172,11 +184,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/requests",
+					"raw": "{{base_url}}/requests",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"requests"
 					]
@@ -192,7 +203,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDc2NDU5OSwiZXhwIjoxNzQwNzY4MTk5fQ.urdUEmYgjXPqvg2E91dYARKBXAuNn1QvmlRucaMB2pc",
+							"value": "{{auth_token}}",
 							"type": "string"
 						}
 					]
@@ -206,21 +217,23 @@
 						"disabled": true
 					}
 				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"description\": \"Тестовая заявка\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/requests/create?description=Тестовая заявка",
+					"raw": "{{base_url}}/requests/create",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"requests",
 						"create"
-					],
-					"query": [
-						{
-							"key": "description",
-							"value": "Тестовая заявка"
-						}
 					]
 				}
 			},
@@ -234,28 +247,30 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDY4MTU0MCwiZXhwIjoxNzQwNjg1MTQwfQ.r61JBEJvQ-ditUWs-mHfTHQ0Dl717Kfa1wv--1i92kU",
+							"value": "{{auth_token}}",
 							"type": "string"
 						}
 					]
 				},
-				"method": "POST",
+				"method": "PUT",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"requestId\": 3\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/requests/assign?requestId=1",
+					"raw": "{{base_url}}/requests/assign",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"requests",
 						"assign"
-					],
-					"query": [
-						{
-							"key": "requestId",
-							"value": "1"
-						}
 					]
 				}
 			},
@@ -269,12 +284,12 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDc2NDU5OSwiZXhwIjoxNzQwNzY4MTk5fQ.urdUEmYgjXPqvg2E91dYARKBXAuNn1QvmlRucaMB2pc",
+							"value": "{{auth_token}}",
 							"type": "string"
 						}
 					]
 				},
-				"method": "POST",
+				"method": "PUT",
 				"header": [
 					{
 						"key": "Authorization",
@@ -283,33 +298,23 @@
 						"disabled": true
 					}
 				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"requestId\": 1,\n    \"status\": \"APPROVED\",\n    \"userId\": 2,\n    \"expiresAt\": \"2025-03-10T12:00:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/requests/update-status?requestId=7&status=APPROVED&userId=2&expiresAt=2025-03-10T12:00:00",
+					"raw": "{{base_url}}/requests/update-status",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"requests",
 						"update-status"
-					],
-					"query": [
-						{
-							"key": "requestId",
-							"value": "7"
-						},
-						{
-							"key": "status",
-							"value": "APPROVED"
-						},
-						{
-							"key": "userId",
-							"value": "2"
-						},
-						{
-							"key": "expiresAt",
-							"value": "2025-03-10T12:00:00"
-						}
 					]
 				}
 			},
@@ -323,36 +328,30 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDc2NjIyMCwiZXhwIjoxNzQwNzY5ODIwfQ.lSpl2RKFoVIJCRERC1mjw4uiB5SgPH05OBndxChqAGQ",
+							"value": "{{auth_token}}",
 							"type": "string"
 						}
 					]
 				},
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"user\",\n    \"reason\": \"Причина\",\n    \"expiresAt\": \"expiresAt=2025-03-10T12:00:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/sanctions/impose?username=user&reason=Причина&expiresAt=2025-03-10T12:00:00",
+					"raw": "{{base_url}}/sanctions/impose",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"sanctions",
 						"impose"
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "user"
-						},
-						{
-							"key": "reason",
-							"value": "Причина"
-						},
-						{
-							"key": "expiresAt",
-							"value": "2025-03-10T12:00:00"
-						}
 					]
 				}
 			},
@@ -366,28 +365,30 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJic2h2ZXZnbiIsImlhdCI6MTc0MDc2NjIyMCwiZXhwIjoxNzQwNzY5ODIwfQ.lSpl2RKFoVIJCRERC1mjw4uiB5SgPH05OBndxChqAGQ",
+							"value": "{{auth_token}}",
 							"type": "string"
 						}
 					]
 				},
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"user\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/sanctions/remove?username=user",
+					"raw": "{{base_url}}/sanctions/remove",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"sanctions",
 						"remove"
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "user"
-						}
 					]
 				}
 			},
