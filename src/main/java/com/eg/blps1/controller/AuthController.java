@@ -1,6 +1,7 @@
 package com.eg.blps1.controller;
 
 import com.eg.blps1.dto.ApiResponse;
+import com.eg.blps1.dto.LoginApiResponse;
 import com.eg.blps1.dto.LoginRequest;
 import com.eg.blps1.dto.RegisterRequest;
 import com.eg.blps1.service.UserService;
@@ -28,13 +29,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginApiResponse> login(@RequestBody LoginRequest request) {
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
         authenticationManager.authenticate(authToken);
         String token = jwtUtil.generateToken(request.getUsername());
 
-        ApiResponse response = new ApiResponse("success", token);
-        return ResponseEntity.ok(token);
+        LoginApiResponse response = new LoginApiResponse(token);
+        return ResponseEntity.ok(response);
     }
 }
