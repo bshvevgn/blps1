@@ -1,5 +1,6 @@
 package com.eg.blps1.controller;
 
+import com.eg.blps1.dto.ApiResponse;
 import com.eg.blps1.dto.ListingRequest;
 import com.eg.blps1.model.Listing;
 import com.eg.blps1.model.User;
@@ -21,21 +22,24 @@ public class ListingController {
     private final SanctionService sanctionService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createListing(@RequestBody ListingRequest request) {
+    public ResponseEntity<ApiResponse> createListing(@RequestBody ListingRequest request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
 
         if (!user.isLandlord()) {
-            return ResponseEntity.status(403).body("Вы не арендодатель.");
+            ApiResponse response = new ApiResponse("error", "Вы не арендодатель.");
+            return ResponseEntity.status(403).body(response);
         }
 
         if (sanctionService.hasActiveSanction(user)) {
-            return ResponseEntity.status(403).body("Вы не можете размещать объявления из-за санкции.");
+            ApiResponse response = new ApiResponse("error", "Вы не можете размещать объявления из-за санкции.");
+            return ResponseEntity.status(403).body(response);
         }
 
         Listing listing = new Listing(request.getAddress(), request.getPrice(), request.getNote(), user);
         listingRepository.save(listing);
 
-        return ResponseEntity.ok("Объявление размещено.");
+        ApiResponse response = new ApiResponse("success", "Объявление размещено.");
+        return ResponseEntity.ok(response);
     }
 }

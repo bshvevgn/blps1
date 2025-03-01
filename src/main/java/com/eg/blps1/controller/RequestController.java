@@ -1,5 +1,6 @@
 package com.eg.blps1.controller;
 
+import com.eg.blps1.dto.ApiResponse;
 import com.eg.blps1.dto.AssignRequestDto;
 import com.eg.blps1.dto.CreateRequestDto;
 import com.eg.blps1.dto.UpdateStatusDto;
@@ -39,7 +40,8 @@ public class RequestController {
                 user, List.of(RequestStatus.CREATED, RequestStatus.UNDER_REVIEW));
 
         if (activeRequestsCount >= 5) {
-            return ResponseEntity.status(403).body("Вы не можете создать новую заявку, пока у вас есть 5 активных заявок.");
+            ApiResponse response = new ApiResponse("error", "Вы не можете создать новую заявку, пока у вас есть 5 активных заявок.");
+            return ResponseEntity.status(403).body(response);
         }
 
         SanctionRequest request = new SanctionRequest();
@@ -56,14 +58,14 @@ public class RequestController {
         return ResponseEntity.ok(requestService.getAllRequests());
     }
 
-    @PostMapping("/assign")
+    @PutMapping("/assign")
     public ResponseEntity<SanctionRequest> assignRequest(@RequestBody AssignRequestDto assignRequestDto) {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         SanctionRequest assigned = requestService.assignRequest(assignRequestDto.getRequestId(), currentUsername);
         return ResponseEntity.ok(assigned);
     }
 
-    @PostMapping("/update-status")
+    @PutMapping("/update-status")
     public ResponseEntity<SanctionRequest> updateStatus(@RequestBody UpdateStatusDto updateStatusDto) {
         User user = userRepository.findById(updateStatusDto.getUserId())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));

@@ -1,5 +1,6 @@
 package com.eg.blps1.controller;
 
+import com.eg.blps1.dto.ApiResponse;
 import com.eg.blps1.dto.ImposeSanctionDto;
 import com.eg.blps1.dto.RemoveSanctionDto;
 import com.eg.blps1.model.User;
@@ -20,21 +21,23 @@ public class SanctionController {
     private final UserRepository userRepository;
 
     @PostMapping("/impose")
-    public ResponseEntity<String> imposeSanction(@RequestBody ImposeSanctionDto imposeSanctionDto) {
+    public ResponseEntity<ApiResponse> imposeSanction(@RequestBody ImposeSanctionDto imposeSanctionDto) {
         User user = userRepository.findByUsername(imposeSanctionDto.getUsername()).orElseThrow();
         LocalDateTime expirationTime = LocalDateTime.parse(imposeSanctionDto.getExpiresAt());
 
         sanctionService.imposeSanction(user, imposeSanctionDto.getReason(), expirationTime);
 
-        return ResponseEntity.ok("Санкция применена.");
+        ApiResponse response = new ApiResponse("success", "Санкция применена.");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<String> removeSanction(@RequestBody RemoveSanctionDto removeSanctionDto) {
+    public ResponseEntity<ApiResponse> removeSanction(@RequestBody RemoveSanctionDto removeSanctionDto) {
         User user = userRepository.findByUsername(removeSanctionDto.getUsername()).orElseThrow();
 
         sanctionService.removeSanction(user);
 
-        return ResponseEntity.ok("Санкция снята.");
+        ApiResponse response = new ApiResponse("success", "Санкция снята.");
+        return ResponseEntity.ok(response);
     }
 }
