@@ -22,7 +22,7 @@ public class SanctionController {
                                                  @RequestParam String reason, 
                                                  @RequestParam String expiresAt) {
         User user = userRepository.findByUsername(username).orElseThrow();
-        LocalDateTime expirationTime = LocalDateTime.parse(expiresAt);  // Преобразуем строку в LocalDateTime
+        LocalDateTime expirationTime = LocalDateTime.parse(expiresAt);
 
         sanctionService.imposeSanction(user, reason, expirationTime);
 

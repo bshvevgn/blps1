@@ -14,8 +14,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RequestService {
 
-    private final RequestRepository requestRepository;
     private final UserService userService;
+    private final EmailService emailService;
+    private final RequestRepository requestRepository;
 
     /**
      * Создать новую заявку
@@ -63,11 +64,7 @@ public class RequestService {
         request.setStatus(status);
         SanctionRequest saved = requestRepository.save(request);
 
-        // Здесь условно "отправляем" обратную связь
-        System.out.println("Отправляем уведомление пользователю "
-                + saved.getCreatedBy().getUsername()
-                + ": статус заявки " + saved.getId() + " изменён на " + status);
-
+        emailService.sendStatusChangeMessage(saved.getCreatedBy(), saved);
         return saved;
     }
 }
