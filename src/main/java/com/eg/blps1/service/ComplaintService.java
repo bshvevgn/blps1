@@ -5,10 +5,12 @@ import com.eg.blps1.dto.ComplaintRequest;
 import com.eg.blps1.dto.UpdateStatusRequest;
 import com.eg.blps1.exceptions.ApplicantMatchesDefendantException;
 import com.eg.blps1.exceptions.ComplaintNotFoundException;
+import com.eg.blps1.exceptions.IncorrectRoleIndicationException;
 import com.eg.blps1.exceptions.ModeratorNotAssignedComplaintException;
 import com.eg.blps1.mapper.ComplaintMapper;
 import com.eg.blps1.model.Complaint;
 import com.eg.blps1.model.ComplaintStatus;
+import com.eg.blps1.model.RoleEnum;
 import com.eg.blps1.model.User;
 import com.eg.blps1.repository.ComplaintRepository;
 import com.eg.blps1.utils.CommonUtils;
@@ -34,6 +36,10 @@ public class ComplaintService {
         User defendant = userService.findByUsername(complaintRequest.defendant());
         if (Objects.equals(applicant.getUsername(), defendant.getUsername())) {
             throw new ApplicantMatchesDefendantException();
+        }
+        if ((applicant.getRole() == RoleEnum.ROLE_USER && defendant.getRole() == RoleEnum.ROLE_LANDLORD) ||
+                (applicant.getRole() == RoleEnum.ROLE_LANDLORD && defendant.getRole() == RoleEnum.ROLE_USER)) {
+            throw new IncorrectRoleIndicationException();
         }
         spamService.checkSpamComplaints(applicant);
 

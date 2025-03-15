@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 
@@ -20,6 +21,9 @@ class CustomExceptionHandler {
         log.error(ex.getMessage());
         if (ex instanceof CustomException) {
             return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage(), Instant.now()));
+        }
+        else if (ex instanceof NoResourceFoundException) {
+            return ResponseEntity.notFound().build();
         }
         else if (ex instanceof BindException) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Невалидное тело запроса", Instant.now()));
