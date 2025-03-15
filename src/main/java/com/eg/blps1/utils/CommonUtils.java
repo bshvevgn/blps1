@@ -5,7 +5,7 @@ import com.eg.blps1.service.UserDetailsImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class CommonUtils {
-    public static User getUserIdFromSecurityContext() {
+    public static User getUserFromSecurityContext() {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userDetails.getUser();
     }

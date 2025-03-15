@@ -6,7 +6,7 @@ import com.eg.blps1.model.User;
 import com.eg.blps1.service.SanctionService;
 import com.eg.blps1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,20 +18,18 @@ public class SanctionController {
     private final UserRepository userRepository;
 
     @PostMapping("/impose")
-    public ResponseEntity<String> imposeSanction(@RequestBody ImposeSanctionDto imposeSanctionDto) {
+    @ResponseStatus(HttpStatus.OK)
+    public void imposeSanction(@RequestBody ImposeSanctionDto imposeSanctionDto) {
         User user = userRepository.findByUsername(imposeSanctionDto.getUsername()).orElseThrow();
 
         sanctionService.imposeSanction(user, imposeSanctionDto.getReason(), imposeSanctionDto.getExpiresAt());
-
-        return ResponseEntity.ok("Санкция применена.");
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<String> removeSanction(@RequestBody RemoveSanctionDto removeSanctionDto) {
+    @ResponseStatus(HttpStatus.OK)
+    public void removeSanction(@RequestBody RemoveSanctionDto removeSanctionDto) {
         User user = userRepository.findByUsername(removeSanctionDto.getUsername()).orElseThrow();
 
         sanctionService.removeSanction(user);
-
-        return ResponseEntity.ok("Санкция снята.");
     }
 }

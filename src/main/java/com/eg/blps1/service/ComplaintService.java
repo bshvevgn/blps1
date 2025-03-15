@@ -32,13 +32,13 @@ public class ComplaintService {
     private final ComplaintRepository complaintRepository;
 
     public Complaint create(ComplaintRequest complaintRequest) {
-        User applicant = CommonUtils.getUserIdFromSecurityContext();
+        User applicant = CommonUtils.getUserFromSecurityContext();
         User defendant = userService.findByUsername(complaintRequest.defendant());
         if (Objects.equals(applicant.getUsername(), defendant.getUsername())) {
             throw new ApplicantMatchesDefendantException();
         }
-        if ((applicant.getRole() == RoleEnum.ROLE_USER && defendant.getRole() == RoleEnum.ROLE_LANDLORD) ||
-                (applicant.getRole() == RoleEnum.ROLE_LANDLORD && defendant.getRole() == RoleEnum.ROLE_USER)) {
+        if (!((applicant.getRole() == RoleEnum.ROLE_USER && defendant.getRole() == RoleEnum.ROLE_LANDLORD) ||
+                (applicant.getRole() == RoleEnum.ROLE_LANDLORD && defendant.getRole() == RoleEnum.ROLE_USER))) {
             throw new IncorrectRoleIndicationException();
         }
         spamService.checkSpamComplaints(applicant);
@@ -57,7 +57,7 @@ public class ComplaintService {
         if (complaint.getStatus() != ComplaintStatus.CREATED && complaint.getStatus() != ComplaintStatus.ASSIGNED) {
             throw new RuntimeException("Нельзя назначить заявку, у которой статус не CREATED/ASSIGNED");
         }
-        User moderator = CommonUtils.getUserIdFromSecurityContext();
+        User moderator = CommonUtils.getUserFromSecurityContext();
         complaintMapper.enrichToAssignModerator(complaint, moderator);
         return complaintRepository.save(complaint);
     }
@@ -65,7 +65,7 @@ public class ComplaintService {
     @Transactional
     public Complaint updateComplaintStatus(UpdateStatusRequest updateStatusRequest) {
         Complaint complaint = getById(updateStatusRequest.complaintId());
-        User moderator = CommonUtils.getUserIdFromSecurityContext();
+        User moderator = CommonUtils.getUserFromSecurityContext();
 
         if (complaint.getStatus() != ComplaintStatus.ASSIGNED || !complaint.getModerator().getUsername().equals(moderator.getUsername())) {
             throw new ModeratorNotAssignedComplaintException();

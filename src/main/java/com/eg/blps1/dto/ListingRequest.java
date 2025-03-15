@@ -1,12 +1,14 @@
 package com.eg.blps1.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
-@Getter
-@Setter
-public class ListingRequest {
-    private String address;
-    private double price;
-    private String note;
+public record ListingRequest(
+        @NotBlank
+        String address,
+        @Min(0)
+        double price,
+        @NotBlank
+        String note
+) {
 }

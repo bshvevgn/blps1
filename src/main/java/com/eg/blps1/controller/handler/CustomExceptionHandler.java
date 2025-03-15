@@ -3,6 +3,7 @@ package com.eg.blps1.controller.handler;
 import com.eg.blps1.dto.ErrorResponse;
 import com.eg.blps1.exceptions.CustomException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,7 +24,7 @@ class CustomExceptionHandler {
             return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage(), Instant.now()));
         }
         else if (ex instanceof NoResourceFoundException) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(new ErrorResponse("Такой страницы не существует", Instant.now()), HttpStatus.NOT_FOUND);
         }
         else if (ex instanceof BindException) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Невалидное тело запроса", Instant.now()));

@@ -1,10 +1,10 @@
 package com.eg.blps1.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
-@Getter
-@Setter
-public class BookingRequest {
-    private Long listingId;
+public record BookingRequest(
+        @NotNull @Min(0)
+        Long listingId
+) {
 }

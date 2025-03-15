@@ -25,5 +25,7 @@ public class Booking {
     private Listing listing;
 
     public Booking(User user, Listing listing) {
+        this.user = user;
+        this.listing = listing;
     }
 }
