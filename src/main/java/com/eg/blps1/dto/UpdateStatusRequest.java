@@ -6,9 +6,8 @@ import jakarta.validation.constraints.*;
 import java.time.Instant;
 
 public record UpdateStatusRequest(
-        @NotBlank @Min(0)
+        @NotNull @Min(0)
         Long complaintId,
-        @NotNull @Pattern(regexp = "APPROVED|REJECTED")
         ComplaintStatus status,
         @Future
         Instant expiresAt

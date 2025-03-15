@@ -3,7 +3,7 @@ package com.eg.blps1.service;
 import com.eg.blps1.dto.AssignModeratorRequest;
 import com.eg.blps1.dto.ComplaintRequest;
 import com.eg.blps1.dto.UpdateStatusRequest;
-import com.eg.blps1.exceptions.ApplicantMatchesDefendantExceptions;
+import com.eg.blps1.exceptions.ApplicantMatchesDefendantException;
 import com.eg.blps1.exceptions.ComplaintNotFoundException;
 import com.eg.blps1.exceptions.ModeratorNotAssignedComplaintException;
 import com.eg.blps1.mapper.ComplaintMapper;
@@ -13,11 +13,9 @@ import com.eg.blps1.model.User;
 import com.eg.blps1.repository.ComplaintRepository;
 import com.eg.blps1.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,7 +33,7 @@ public class ComplaintService {
         User applicant = CommonUtils.getUserIdFromSecurityContext();
         User defendant = userService.findByUsername(complaintRequest.defendant());
         if (Objects.equals(applicant.getUsername(), defendant.getUsername())) {
-            throw new ApplicantMatchesDefendantExceptions();
+            throw new ApplicantMatchesDefendantException();
         }
         spamService.checkSpamComplaints(applicant);
 
@@ -63,11 +61,11 @@ public class ComplaintService {
         Complaint complaint = getById(updateStatusRequest.complaintId());
         User moderator = CommonUtils.getUserIdFromSecurityContext();
 
-        if (complaint.getStatus() == ComplaintStatus.ASSIGNED && !complaint.getModerator().equals(moderator)) {
+        if (complaint.getStatus() != ComplaintStatus.ASSIGNED || !complaint.getModerator().getUsername().equals(moderator.getUsername())) {
             throw new ModeratorNotAssignedComplaintException();
         }
-        if (complaint.getStatus() == ComplaintStatus.APPROVED) {
-//            sanctionService.imposeSanction(user, "Заявка принята, санкция наложена.", expirationTime);
+        if (updateStatusRequest.status() == ComplaintStatus.APPROVED) {
+            sanctionService.imposeSanction(complaint.getDefendant(), "Заявка принята, санкция наложена.", updateStatusRequest.expiresAt());
         }
 
         complaintMapper.mergeToStatus(complaint, updateStatusRequest.status());

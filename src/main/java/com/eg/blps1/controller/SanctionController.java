@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-
 @RestController
 @RequestMapping("/sanctions")
 @RequiredArgsConstructor
@@ -22,9 +20,8 @@ public class SanctionController {
     @PostMapping("/impose")
     public ResponseEntity<String> imposeSanction(@RequestBody ImposeSanctionDto imposeSanctionDto) {
         User user = userRepository.findByUsername(imposeSanctionDto.getUsername()).orElseThrow();
-        LocalDateTime expirationTime = LocalDateTime.parse(imposeSanctionDto.getExpiresAt());
 
-//        sanctionService.imposeSanction(user, imposeSanctionDto.getReason(), expirationTime);
+        sanctionService.imposeSanction(user, imposeSanctionDto.getReason(), imposeSanctionDto.getExpiresAt());
 
         return ResponseEntity.ok("Санкция применена.");
     }

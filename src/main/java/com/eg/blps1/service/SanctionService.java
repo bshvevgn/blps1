@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,13 +24,13 @@ public class SanctionService {
     }
 
     public void removeSanction(User user) {
-        List<Sanction> sanctions = sanctionRepository.findByUserAndExpiresAtAfter(user, LocalDateTime.now());
+        List<Sanction> sanctions = sanctionRepository.findByUserAndExpiresAtAfter(user, Instant.now());
         for (Sanction sanction : sanctions) {
             sanctionRepository.delete(sanction);
         }
     }
 
     public boolean hasActiveSanction(User user) {
-        return !sanctionRepository.findByUserAndExpiresAtAfter(user, LocalDateTime.now()).isEmpty();
+        return !sanctionRepository.findByUserAndExpiresAtAfter(user, Instant.now()).isEmpty();
     }
 }

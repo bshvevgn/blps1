@@ -1,7 +1,7 @@
 package com.eg.blps1.exceptions;
 
-public class ApplicantMatchesDefendantExceptions extends RuntimeException {
-    public ApplicantMatchesDefendantExceptions() {
+public class ApplicantMatchesDefendantException extends CustomException {
+    public ApplicantMatchesDefendantException() {
         super("Заявитель и ответчик не могут совпадать");
     }
 }
