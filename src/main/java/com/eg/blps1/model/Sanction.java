@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,9 +25,5 @@ public class Sanction {
     private User user;
 
     private String reason;
-    private LocalDateTime expiresAt;
-
-    public boolean isActive() {
-        return LocalDateTime.now().isBefore(expiresAt);
-    }
+    private Instant expiresAt;
 }

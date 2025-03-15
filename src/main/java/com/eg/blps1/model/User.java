@@ -1,63 +1,41 @@
 package com.eg.blps1.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-public class User implements UserDetails {
+@NoArgsConstructor
+public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
+    @NotBlank
+    @Column(unique = true)
     private String username;
+
+    @NotBlank
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(length = 20)
+    private RoleEnum role;
 
-    private boolean isLandlord;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "user")
-    private List<Sanction> sanctions;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> "ROLE_" + role.name()); // Преобразуем enum в роль
-    }
-
-    public boolean hasActiveSanction() {
-        return sanctions.stream().anyMatch(Sanction::isActive);
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    public User(String username, String password, RoleEnum role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
 }

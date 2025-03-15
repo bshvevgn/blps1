@@ -3,10 +3,10 @@ spring:
     name: blps1
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/sanctions_db
+    url: ${LOCAL_DATASOURCE_URL}
+    username: ${LOCAL_DATASOURCE_USERNAME}
+    password: ${LOCAL_DATASOURCE_PASSWORD}
     driverClassName: org.postgresql.Driver
-    username: postgres
-    password: postgres
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,10 +16,10 @@ spring:
         format_sql: true
 
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: lians2228@gmail.com
-    password: mrxadrcwtyxqabbu
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         debug: false
@@ -27,3 +27,7 @@ spring:
           auth: true
           starttls:
             enable: true
+
+security:
+  token: ${SECURITY_KEY}
+  expiration-time-ms: 172800000

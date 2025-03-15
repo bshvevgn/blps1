@@ -25,9 +25,9 @@ public class ListingController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
 
-        if (!user.isLandlord()) {
-            return ResponseEntity.status(403).body("Вы не арендодатель.");
-        }
+//        if (!user.isLandlord()) {
+//            return ResponseEntity.status(403).body("Вы не арендодатель.");
+//        }
 
         if (sanctionService.hasActiveSanction(user)) {
             return ResponseEntity.status(403).body("Вы не можете размещать объявления из-за санкции.");

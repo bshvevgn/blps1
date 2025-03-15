@@ -24,7 +24,7 @@ public class SanctionController {
         User user = userRepository.findByUsername(imposeSanctionDto.getUsername()).orElseThrow();
         LocalDateTime expirationTime = LocalDateTime.parse(imposeSanctionDto.getExpiresAt());
 
-        sanctionService.imposeSanction(user, imposeSanctionDto.getReason(), expirationTime);
+//        sanctionService.imposeSanction(user, imposeSanctionDto.getReason(), expirationTime);
 
         return ResponseEntity.ok("Санкция применена.");
     }

@@ -6,6 +6,7 @@ import com.eg.blps1.repository.SanctionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class SanctionService {
 
     private final SanctionRepository sanctionRepository;
 
-    public void imposeSanction(User user, String reason, LocalDateTime expiresAt) {
+    public void imposeSanction(User user, String reason, Instant expiresAt) {
         Sanction sanction = new Sanction();
         sanction.setUser(user);
         sanction.setReason(reason);

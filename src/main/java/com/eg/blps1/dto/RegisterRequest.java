@@ -1,14 +1,15 @@
 package com.eg.blps1.dto;
 
-import com.eg.blps1.model.Role;
-import lombok.Getter;
-import lombok.Setter;
+import com.eg.blps1.model.RoleEnum;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-@Getter
-@Setter
-public class RegisterRequest {
-    private String username;
-    private String password;
-    private Role role = Role.USER;
-    private boolean isLandlord;
-}
+public record RegisterRequest (
+    @NotBlank @Email
+    String username,
+    @Size(min = 5)
+    String password,
+    RoleEnum role
+){}

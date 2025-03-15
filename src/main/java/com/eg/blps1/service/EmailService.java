@@ -1,6 +1,6 @@
 package com.eg.blps1.service;
 
-import com.eg.blps1.model.SanctionRequest;
+import com.eg.blps1.model.Complaint;
 import com.eg.blps1.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,7 +14,7 @@ public class EmailService {
     private final JavaMailSender emailSender;
 
     @Async
-    public void sendStatusChangeMessage(User user, SanctionRequest sanction) {
+    public void sendStatusChangeMessage(User user, Complaint sanction) {
         sendMessage(
                 user.getUsername(),
                 "Изменение статуса заявки №" + sanction.getId(),

@@ -1,9 +1,8 @@
 package com.eg.blps1.model;
 
-public enum RequestStatus {
+public enum ComplaintStatus {
     CREATED,
     ASSIGNED,
-    UNDER_REVIEW,
     APPROVED,
     REJECTED
 }
