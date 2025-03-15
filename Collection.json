@@ -1,0 +1,398 @@
+{
+	"info": {
+		"_postman_id": "0bce60b8-1162-4db7-996c-287fe5a2fbba",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31256664"
+	},
+	"item": [
+		{
+			"name": "/auth/signup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"user2@yandex.ru\",\n    \"password\": \"18381838\",\n    \"role\": \"ROLE_USER\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/signup",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/auth/signin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonResponse = JSON.parse(responseBody);",
+							"var token = jsonResponse.token;",
+							"",
+							"pm.environment.set(\"auth_token\", token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"moderator@yandex.ru\",\n    \"password\": \"18381838\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/signin",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bookings/create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"listingId\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/bookings/create",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"bookings",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/listings/create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"Санкт-Петербург, Приморский проспект, 78, 12\",\n    \"price\": 3200,\n    \"note\": \"Видовые апартаменты\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/listings/create",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"listings",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/complaint",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/complaint",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"complaint"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/complaint/create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzQwNzU5NDYwLCJleHAiOjE3NDA3NjMwNjB9.cxsQFgBuThPrZWXGFNqCAopAl6AVcUPVc2b-gHxHypA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Тестовая заявка\",\n    \"description\": \"Описание заявки\",\n    \"defendant\": \"user2@yandex.ru\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/complaint/create",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"complaint",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/complaint/assign",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"complaintId\": 3\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/complaint/assign",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"complaint",
+						"assign"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/complaint/status",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzQwNzU5NDYwLCJleHAiOjE3NDA3NjMwNjB9.cxsQFgBuThPrZWXGFNqCAopAl6AVcUPVc2b-gHxHypA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"complaintId\": 3,\n    \"status\": \"APPROVED\",\n    \"expiresAt\": \"2025-03-16T12:58:27.961Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/complaint/status",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"complaint",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/sanctions/impose",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"user1@yandex.ru\",\n    \"reason\": \"Причина\",\n    \"expiresAt\": \"2025-03-17T12:58:27.961Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/sanctions/impose",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"sanctions",
+						"impose"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/sanctions/remove",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"user1@yandex.ru\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/sanctions/remove",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"sanctions",
+						"remove"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
