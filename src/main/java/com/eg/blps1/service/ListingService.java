@@ -22,10 +22,13 @@ public class ListingService {
     private final TransactionTemplate transactionTemplate;
 
     public Listing create(ListingRequest request) {
+        return transactionTemplate.execute(status -> {
             User user = CommonUtils.getUserFromSecurityContext();
-            if (sanctionService.hasActiveSanction(user)) throw new ActiveSanctionException();
-
+            if (sanctionService.hasActiveSanction(user)) {
+                throw new ActiveSanctionException();
+            }
             Listing listing = listingMapper.mapToEntity(request, user);
             return listingRepository.save(listing);
+        });
     }
 }

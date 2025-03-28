@@ -8,11 +8,9 @@ import com.eg.blps1.model.User;
 import com.eg.blps1.repository.SanctionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.Instant;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +35,7 @@ public class SanctionService {
                 status.setRollbackOnly();
                 throw e;
             }
+            return null;
         });
     }
 
@@ -49,6 +48,7 @@ public class SanctionService {
                 status.setRollbackOnly();
                 throw e;
             }
+            return null;
         });
     }
 
