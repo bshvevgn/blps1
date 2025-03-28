@@ -7,6 +7,7 @@ spring:
     username: ${LOCAL_DATASOURCE_USERNAME}
     password: ${LOCAL_DATASOURCE_PASSWORD}
     driverClassName: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,6 +15,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  jta:
+    enabled: true
+    atomikos:
+      properties:
+        enable-logging: true
+        transaction-timeout: 300
 
   mail:
     host: ${MAIL_HOST}

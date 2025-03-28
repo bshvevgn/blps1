@@ -9,6 +9,9 @@ import com.eg.blps1.repository.ListingRepository;
 import com.eg.blps1.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +19,13 @@ public class ListingService {
     private final ListingMapper listingMapper;
     private final SanctionService sanctionService;
     private final ListingRepository listingRepository;
+    private final TransactionTemplate transactionTemplate;
 
     public Listing create(ListingRequest request) {
-        User user = CommonUtils.getUserFromSecurityContext();
-        if (sanctionService.hasActiveSanction(user)) throw new ActiveSanctionException();
+            User user = CommonUtils.getUserFromSecurityContext();
+            if (sanctionService.hasActiveSanction(user)) throw new ActiveSanctionException();
 
-        Listing listing = listingMapper.mapToEntity(request, user);
-        return listingRepository.save(listing);
+            Listing listing = listingMapper.mapToEntity(request, user);
+            return listingRepository.save(listing);
     }
 }
