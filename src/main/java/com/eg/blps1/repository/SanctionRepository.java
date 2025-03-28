@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface SanctionRepository extends JpaRepository<Sanction, Long> {
     List<Sanction> findByUserAndExpiresAtAfter(User user, Instant now);
+    void deleteAllByUserAndExpiresAtAfter(User user, Instant now);
 }

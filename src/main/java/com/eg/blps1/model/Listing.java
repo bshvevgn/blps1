@@ -1,12 +1,12 @@
 package com.eg.blps1.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
-
 @Data
+@Table(name = "listing")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,5 +25,9 @@ public class Listing {
     private User user;
 
     public Listing(String address, double price, String note, User user) {
+        this.address = address;
+        this.price = price;
+        this.note = note;
+        this.user = user;
     }
 }

@@ -1,14 +1,16 @@
 package com.eg.blps1.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.Instant;
 
-@Getter
-@Setter
-public class ImposeSanctionDto {
-    private String username;
-    private String reason;
-    private Instant expiresAt;
+public record ImposeSanctionDto(
+        @NotBlank
+        String username,
+        @NotBlank
+        String reason,
+        @Future
+        Instant expiresAt
+) {
 }

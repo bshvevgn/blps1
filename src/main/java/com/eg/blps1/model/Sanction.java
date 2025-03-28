@@ -25,4 +25,10 @@ public class Sanction {
 
     private String reason;
     private Instant expiresAt;
+
+    public Sanction(User user, String reason, Instant expiresAt) {
+        this.user = user;
+        this.reason = reason;
+        this.expiresAt = expiresAt;
+    }
 }

@@ -1,36 +1,27 @@
 package com.eg.blps1.service;
 
-import com.eg.blps1.model.Sanction;
+import com.eg.blps1.dto.ListingRequest;
+import com.eg.blps1.exceptions.ActiveSanctionException;
+import com.eg.blps1.mapper.ListingMapper;
+import com.eg.blps1.model.Listing;
 import com.eg.blps1.model.User;
-import com.eg.blps1.repository.SanctionRepository;
+import com.eg.blps1.repository.ListingRepository;
+import com.eg.blps1.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ListingService {
+    private final ListingMapper listingMapper;
+    private final SanctionService sanctionService;
+    private final ListingRepository listingRepository;
 
-    private final SanctionRepository sanctionRepository;
+    public Listing create(ListingRequest request) {
+        User user = CommonUtils.getUserFromSecurityContext();
+        if (sanctionService.hasActiveSanction(user)) throw new ActiveSanctionException();
 
-    public void imposeSanction(User user, String reason, Instant expiresAt) {
-        Sanction sanction = new Sanction();
-        sanction.setUser(user);
-        sanction.setReason(reason);
-        sanction.setExpiresAt(expiresAt);
-        sanctionRepository.save(sanction);
-    }
-
-    public void removeSanction(User user) {
-        List<Sanction> sanctions = sanctionRepository.findByUserAndExpiresAtAfter(user, Instant.now());
-        for (Sanction sanction : sanctions) {
-            sanctionRepository.delete(sanction);
-        }
-    }
-
-    public boolean hasActiveSanction(User user) {
-        return !sanctionRepository.findByUserAndExpiresAtAfter(user, Instant.now()).isEmpty();
+        Listing listing = listingMapper.mapToEntity(request, user);
+        return listingRepository.save(listing);
     }
 }
