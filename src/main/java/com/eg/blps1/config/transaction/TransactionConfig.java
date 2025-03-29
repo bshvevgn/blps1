@@ -22,22 +22,20 @@ public class TransactionConfig {
         return userTransactionImp;
     }
 
-    @Bean(name = "atomikosTransactionManager")
-    public PlatformTransactionManager atomikosTransactionManager() throws Throwable {
+//    @Bean(name = "atomikosTransactionManager")
+//    public PlatformTransactionManager atomikosTransactionManager() throws Throwable {
+//
+//    }
+
+    @Bean(name = "transactionManager")
+    @DependsOn({ "userTransaction" })
+    public PlatformTransactionManager transactionManager() throws Throwable {
         UserTransactionManager userTransactionManager = new UserTransactionManager();
         userTransactionManager.setForceShutdown(false);
 
         AtomikosJtaPlatform.transactionManager = userTransactionManager;
 
         return new JtaTransactionManager(userTransaction(), userTransactionManager);
-    }
-
-    @Bean(name = "transactionManager")
-    @DependsOn({ "userTransaction", "atomikosTransactionManager" })
-    public PlatformTransactionManager transactionManager(UserTransaction userTransaction,
-                                                         PlatformTransactionManager atomikosTransactionManager) {
-        AtomikosJtaPlatform.transaction = userTransaction;
-        return atomikosTransactionManager;
     }
 
     @Bean(name = "transactionTemplate")
