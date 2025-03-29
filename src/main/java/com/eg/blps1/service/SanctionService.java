@@ -27,29 +27,13 @@ public class SanctionService {
     }
 
     public void imposeSanction(String username, String reason, Instant expiresAt) {
-        transactionTemplate.execute(status -> {
-            try {
-                Sanction sanction = sanctionMapper.mapToEntity(username, reason, expiresAt);
-                sanctionRepository.save(sanction);
-            } catch (Exception e) {
-                status.setRollbackOnly();
-                throw e;
-            }
-            return null;
-        });
+        Sanction sanction = sanctionMapper.mapToEntity(username, reason, expiresAt);
+        sanctionRepository.save(sanction);
     }
 
     public void remove(RemoveSanctionDto removeSanctionDto) {
-        transactionTemplate.execute(status -> {
-            try {
-                User user = userService.findByUsername(removeSanctionDto.username());
-                sanctionRepository.deleteAllByUsernameAndExpiresAtAfter(user.getUsername(), Instant.now());
-            } catch (Exception e) {
-                status.setRollbackOnly();
-                throw e;
-            }
-            return null;
-        });
+        User user = userService.findByUsername(removeSanctionDto.username());
+        sanctionRepository.deleteAllByUsernameAndExpiresAtAfter(user.getUsername(), Instant.now());
     }
 
     public boolean hasActiveSanction(User user) {

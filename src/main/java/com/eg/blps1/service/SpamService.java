@@ -17,20 +17,12 @@ public class SpamService {
     private final TransactionTemplate transactionTemplate;
 
     public void checkSpamComplaints(User applicant) {
-        transactionTemplate.execute(status -> {
-            try {
-                long activeRequestsCount = complaintRepository.countByApplicantAndStatusIn(
-                        applicant, List.of(ComplaintStatus.CREATED, ComplaintStatus.ASSIGNED)
-                );
+        long activeRequestsCount = complaintRepository.countByApplicantAndStatusIn(
+                applicant, List.of(ComplaintStatus.CREATED, ComplaintStatus.ASSIGNED)
+        );
 
-                if (activeRequestsCount >= 5) {
-                    throw new SpamComplaintsException("Вы не можете создать новую заявку, пока у вас не меньше 5 активных заявок.");
-                }
-                return null;
-            } catch (Exception e) {
-                status.setRollbackOnly();
-                throw e;
-            }
-        });
+        if (activeRequestsCount >= 5) {
+            throw new SpamComplaintsException("Вы не можете создать новую заявку, пока у вас не меньше 5 активных заявок.");
+        }
     }
 }

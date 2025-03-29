@@ -19,19 +19,17 @@ public class UserService {
     private final TransactionTemplate transactionTemplate;
 
     public User registerUser(RegisterRequest registerRequest) {
-        return transactionTemplate.execute(status -> {
-            if (userXmlRepository.findByUsername(registerRequest.username()).isPresent()) {
-                throw new UsernameAlreadyExistException();
-            }
+        if (userXmlRepository.findByUsername(registerRequest.username()).isPresent()) {
+            throw new UsernameAlreadyExistException();
+        }
 
-            return userXmlRepository.save(
-                    new User(
-                            registerRequest.username(),
-                            passwordEncoder.encode(registerRequest.password()),
-                            registerRequest.role()
-                    )
-            );
-        });
+        return userXmlRepository.save(
+                new User(
+                        registerRequest.username(),
+                        passwordEncoder.encode(registerRequest.password()),
+                        registerRequest.role()
+                )
+        );
     }
 
     public User findByUsername(String username) {

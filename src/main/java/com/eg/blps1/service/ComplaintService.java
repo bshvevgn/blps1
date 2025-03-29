@@ -56,35 +56,31 @@ public class ComplaintService {
     }
 
     public Complaint assignModerator(AssignModeratorRequest assignModeratorRequest) {
-        return transactionTemplate.execute(status -> {
-            Complaint complaint = getById(assignModeratorRequest.complaintId());
+        Complaint complaint = getById(assignModeratorRequest.complaintId());
 
-            if (complaint.getStatus() != ComplaintStatus.CREATED && complaint.getStatus() != ComplaintStatus.ASSIGNED) {
-                throw new RuntimeException("Нельзя назначить заявку, у которой статус не CREATED/ASSIGNED");
-            }
-            User moderator = CommonUtils.getUserFromSecurityContext();
-            complaintMapper.enrichToAssignModerator(complaint, moderator);
-            return complaintRepository.save(complaint);
-        });
+        if (complaint.getStatus() != ComplaintStatus.CREATED && complaint.getStatus() != ComplaintStatus.ASSIGNED) {
+            throw new RuntimeException("Нельзя назначить заявку, у которой статус не CREATED/ASSIGNED");
+        }
+        User moderator = CommonUtils.getUserFromSecurityContext();
+        complaintMapper.enrichToAssignModerator(complaint, moderator);
+        return complaintRepository.save(complaint);
     }
 
     public Complaint updateComplaintStatus(UpdateStatusRequest updateStatusRequest) {
-        return transactionTemplate.execute(status -> {
-            Complaint complaint = getById(updateStatusRequest.complaintId());
-            User moderator = CommonUtils.getUserFromSecurityContext();
+        Complaint complaint = getById(updateStatusRequest.complaintId());
+        User moderator = CommonUtils.getUserFromSecurityContext();
 
-            if (complaint.getStatus() != ComplaintStatus.ASSIGNED || !complaint.getModerator().equals(moderator.getUsername())) {
-                throw new ModeratorNotAssignedComplaintException();
-            }
-            if (updateStatusRequest.status() == ComplaintStatus.APPROVED) {
-                sanctionService.imposeSanction(complaint.getDefendant(), "Заявка принята, санкция наложена.", updateStatusRequest.expiresAt());
-            }
+        if (complaint.getStatus() != ComplaintStatus.ASSIGNED || !complaint.getModerator().equals(moderator.getUsername())) {
+            throw new ModeratorNotAssignedComplaintException();
+        }
+        if (updateStatusRequest.status() == ComplaintStatus.APPROVED) {
+            sanctionService.imposeSanction(complaint.getDefendant(), "Заявка принята, санкция наложена.", updateStatusRequest.expiresAt());
+        }
 
-            complaintMapper.mergeToStatus(complaint, updateStatusRequest.status());
-            Complaint saved = complaintRepository.save(complaint);
-            emailService.sendStatusChangeMessage(saved.getApplicant(), saved);
-            return saved;
-        });
+        complaintMapper.mergeToStatus(complaint, updateStatusRequest.status());
+        Complaint saved = complaintRepository.save(complaint);
+        emailService.sendStatusChangeMessage(saved.getApplicant(), saved);
+        return saved;
     }
 
     private Complaint getById(Long complaintId) {
