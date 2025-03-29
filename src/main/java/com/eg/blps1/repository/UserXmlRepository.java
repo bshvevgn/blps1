@@ -40,7 +40,7 @@ public class UserXmlRepository {
         if (!file.exists()) {
             return new UserStorage();
         }
-        if (file.canRead() && file.canWrite()) throw new RuntimeException("Файл закрыт для чтения или записи.");
+        if (!file.canRead() || !file.canWrite()) throw new RuntimeException("Файл закрыт для чтения или записи.");
 
         try {
             return (UserStorage) unmarshaller.unmarshal(file);
