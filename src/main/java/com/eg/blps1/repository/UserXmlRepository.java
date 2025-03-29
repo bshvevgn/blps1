@@ -3,19 +3,23 @@ package com.eg.blps1.repository;
 
 import com.eg.blps1.model.User;
 import com.eg.blps1.model.UserStorage;
-import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
-import lombok.SneakyThrows;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class UserXmlRepository {
     private static final String FILE_PATH = "users.xml";
+    private final Marshaller marshaller;
+    private final Unmarshaller unmarshaller;
 
     public User save(User user) {
         UserStorage userStorage = loadUsers();
@@ -31,26 +35,29 @@ public class UserXmlRepository {
                 .findFirst();
     }
 
-    @SneakyThrows
     private UserStorage loadUsers() {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
             return new UserStorage();
         }
+        if (!file.canRead() || !file.canWrite()) throw new RuntimeException("Файл закрыт для чтения или записи.");
 
-        JAXBContext context = JAXBContext.newInstance(UserStorage.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        return (UserStorage) unmarshaller.unmarshal(file);
+        try {
+            return (UserStorage) unmarshaller.unmarshal(file);
+        } catch (JAXBException ex) {
+            throw new RuntimeException("Ошибка при загрузке данных пользователей!");
+        }
     }
 
-    @SneakyThrows
     private void saveUsers(UserStorage userStorage) {
-        JAXBContext context = JAXBContext.newInstance(UserStorage.class);
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        try {
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-        try (FileWriter writer = new FileWriter(FILE_PATH)) {
-            marshaller.marshal(userStorage, writer);
+            try (FileWriter writer = new FileWriter(FILE_PATH)) {
+                marshaller.marshal(userStorage, writer);
+            }
+        } catch (JAXBException | IOException ex) {
+            throw new RuntimeException("Ошибка при сохранении данных пользователей!");
         }
     }
 }
