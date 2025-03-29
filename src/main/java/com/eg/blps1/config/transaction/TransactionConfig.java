@@ -22,10 +22,6 @@ public class TransactionConfig {
         return userTransactionImp;
     }
 
-//    @Bean(name = "atomikosTransactionManager")
-//    public PlatformTransactionManager atomikosTransactionManager() throws Throwable {
-//
-//    }
 
     @Bean(name = "transactionManager")
     @DependsOn({ "userTransaction" })

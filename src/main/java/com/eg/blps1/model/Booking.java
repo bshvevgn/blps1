@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -22,8 +24,13 @@ public class Booking {
     @JoinColumn(name = "listing_id")
     private Listing listing;
 
-    public Booking(String username, Listing listing) {
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    public Booking(String username, Listing listing, LocalDate startDate, LocalDate endDate) {
         this.username = username;
         this.listing = listing;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }
