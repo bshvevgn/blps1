@@ -10,14 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class UserDetailsImpl implements UserDetails {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final Long id;
+    private final String id;
 
     private final String username;
 
@@ -28,7 +27,7 @@ public class UserDetailsImpl implements UserDetails {
 
     private final User user;
 
-    public UserDetailsImpl(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities, User user) {
+    public UserDetailsImpl(String id, String username, String password, Collection<? extends GrantedAuthority> authorities, User user) {
         this.id = id;
         this.username = username;
         this.password = password;

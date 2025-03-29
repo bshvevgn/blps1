@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    // Можно добавить методы для поиска бронирований, например, по пользователю или объявлению
 }

@@ -16,16 +16,14 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private String username;
 
     @ManyToOne
     @JoinColumn(name = "listing_id")
     private Listing listing;
 
-    public Booking(User user, Listing listing) {
-        this.user = user;
+    public Booking(String username, Listing listing) {
+        this.username = username;
         this.listing = listing;
     }
 }

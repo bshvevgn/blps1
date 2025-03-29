@@ -73,7 +73,7 @@ public class ComplaintService {
             Complaint complaint = getById(updateStatusRequest.complaintId());
             User moderator = CommonUtils.getUserFromSecurityContext();
 
-            if (complaint.getStatus() != ComplaintStatus.ASSIGNED || !complaint.getModerator().getUsername().equals(moderator.getUsername())) {
+            if (complaint.getStatus() != ComplaintStatus.ASSIGNED || !complaint.getModerator().equals(moderator.getUsername())) {
                 throw new ModeratorNotAssignedComplaintException();
             }
             if (updateStatusRequest.status() == ComplaintStatus.APPROVED) {

@@ -23,13 +23,13 @@ public class SanctionService {
 
     public void imposeSanction(ImposeSanctionDto imposeSanctionDto) {
         User user = userService.findByUsername(imposeSanctionDto.username());
-        imposeSanction(user, imposeSanctionDto.reason(), imposeSanctionDto.expiresAt());
+        imposeSanction(user.getUsername(), imposeSanctionDto.reason(), imposeSanctionDto.expiresAt());
     }
 
-    public void imposeSanction(User user, String reason, Instant expiresAt) {
+    public void imposeSanction(String username, String reason, Instant expiresAt) {
         transactionTemplate.execute(status -> {
             try {
-                Sanction sanction = sanctionMapper.mapToEntity(user, reason, expiresAt);
+                Sanction sanction = sanctionMapper.mapToEntity(username, reason, expiresAt);
                 sanctionRepository.save(sanction);
             } catch (Exception e) {
                 status.setRollbackOnly();
@@ -43,7 +43,7 @@ public class SanctionService {
         transactionTemplate.execute(status -> {
             try {
                 User user = userService.findByUsername(removeSanctionDto.username());
-                sanctionRepository.deleteAllByUserAndExpiresAtAfter(user, Instant.now());
+                sanctionRepository.deleteAllByUsernameAndExpiresAtAfter(user.getUsername(), Instant.now());
             } catch (Exception e) {
                 status.setRollbackOnly();
                 throw e;
@@ -53,6 +53,6 @@ public class SanctionService {
     }
 
     public boolean hasActiveSanction(User user) {
-        return !sanctionRepository.findByUserAndExpiresAtAfter(user, Instant.now()).isEmpty();
+        return !sanctionRepository.findByUsernameAndExpiresAtAfter(user.getUsername(), Instant.now()).isEmpty();
     }
 }

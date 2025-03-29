@@ -23,17 +23,9 @@ public class Complaint {
     @Enumerated(EnumType.STRING)
     private ComplaintStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "applicant_id")
-    private User applicant;  // заявитель
-
-    @ManyToOne
-    @JoinColumn(name = "defendant_id")
-    private User defendant;  // ответчик
-
-    @ManyToOne
-    @JoinColumn(name = "moderator_id")
-    private User moderator; // модератор
+    private String applicant;  // заявитель
+    private String defendant;  // ответчик
+    private String moderator;  // модератор
 
     private Instant createdAt;
     private Instant updatedAt;

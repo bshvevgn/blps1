@@ -3,7 +3,7 @@ package com.eg.blps1.service;
 import com.eg.blps1.dto.RegisterRequest;
 import com.eg.blps1.exceptions.UsernameAlreadyExistException;
 import com.eg.blps1.model.User;
-import com.eg.blps1.repository.UserRepository;
+import com.eg.blps1.repository.UserXmlRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,17 +14,17 @@ import org.springframework.transaction.support.TransactionTemplate;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserXmlRepository userXmlRepository;
     private final PasswordEncoder passwordEncoder;
     private final TransactionTemplate transactionTemplate;
 
     public User registerUser(RegisterRequest registerRequest) {
         return transactionTemplate.execute(status -> {
-            if (userRepository.existsByUsername(registerRequest.username())) {
-                throw new UsernameAlreadyExistException("Пользователь с таким именем уже существует");
+            if (userXmlRepository.findByUsername(registerRequest.username()).isPresent()) {
+                throw new UsernameAlreadyExistException();
             }
 
-            return userRepository.save(
+            return userXmlRepository.save(
                     new User(
                             registerRequest.username(),
                             passwordEncoder.encode(registerRequest.password()),
@@ -35,7 +35,7 @@ public class UserService {
     }
 
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
+        return userXmlRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь с таким именем не найден: " + username));
     }
 }

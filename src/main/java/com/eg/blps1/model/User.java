@@ -1,39 +1,25 @@
 package com.eg.blps1.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.UUID;
 
-@Entity
-@Table(name = "users")
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class User {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @NotBlank
-    @Column(unique = true)
+    private String id;
     private String username;
-
-    @NotBlank
     private String password;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
     private RoleEnum role;
 
     public User(String username, String password, RoleEnum role) {
+        this.id = UUID.randomUUID().toString();
         this.username = username;
         this.password = password;
         this.role = role;

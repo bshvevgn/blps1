@@ -19,15 +19,12 @@ public class Listing {
     private String address;
     private double price;
     private String note;
+    private String username;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    public Listing(String address, double price, String note, User user) {
+    public Listing(String address, double price, String note, String username) {
         this.address = address;
         this.price = price;
         this.note = note;
-        this.user = user;
+        this.username = username;
     }
 }

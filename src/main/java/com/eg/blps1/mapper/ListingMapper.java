@@ -11,6 +11,6 @@ import org.springframework.stereotype.Component;
 public class ListingMapper {
 
     public Listing mapToEntity(ListingRequest request, User user) {
-        return new Listing(request.address(), request.price(), request.note(), user);
+        return new Listing(request.address(), request.price(), request.note(), user.getUsername());
     }
 }

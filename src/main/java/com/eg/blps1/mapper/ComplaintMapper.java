@@ -15,13 +15,13 @@ public class ComplaintMapper {
         Complaint complaint = new Complaint();
         complaint.setTitle(complaintRequest.title());
         complaint.setDescription(complaintRequest.description());
-        complaint.setApplicant(applicant);
-        complaint.setDefendant(defendant);
+        complaint.setApplicant(applicant.getUsername());
+        complaint.setDefendant(defendant.getUsername());
         return complaint;
     }
 
     public Complaint enrichToAssignModerator(Complaint complaint, User moderator) {
-        complaint.setModerator(moderator);
+        complaint.setModerator(moderator.getUsername());
         complaint.setStatus(ComplaintStatus.ASSIGNED);
         return complaint;
     }
@@ -37,8 +37,8 @@ public class ComplaintMapper {
                 complaint.getTitle(),
                 complaint.getDescription(),
                 complaint.getStatus(),
-                complaint.getApplicant().getUsername(),
-                complaint.getDefendant().getUsername(),
+                complaint.getApplicant(),
+                complaint.getDefendant(),
                 complaint.getCreatedAt()
         );
     }
