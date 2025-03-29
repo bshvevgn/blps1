@@ -67,20 +67,22 @@ public class ComplaintService {
     }
 
     public Complaint updateComplaintStatus(UpdateStatusRequest updateStatusRequest) {
-        Complaint complaint = getById(updateStatusRequest.complaintId());
-        User moderator = CommonUtils.getUserFromSecurityContext();
+        return transactionTemplate.execute(status -> {
+            Complaint complaint = getById(updateStatusRequest.complaintId());
+            User moderator = CommonUtils.getUserFromSecurityContext();
 
-        if (complaint.getStatus() != ComplaintStatus.ASSIGNED || !complaint.getModerator().equals(moderator.getUsername())) {
-            throw new ModeratorNotAssignedComplaintException();
-        }
-        if (updateStatusRequest.status() == ComplaintStatus.APPROVED) {
-            sanctionService.imposeSanction(complaint.getDefendant(), "Заявка принята, санкция наложена.", updateStatusRequest.expiresAt());
-        }
+            if (complaint.getStatus() != ComplaintStatus.ASSIGNED || !complaint.getModerator().equals(moderator.getUsername())) {
+                throw new ModeratorNotAssignedComplaintException();
+            }
+            if (updateStatusRequest.status() == ComplaintStatus.APPROVED) {
+                sanctionService.imposeSanction(complaint.getDefendant(), "Заявка принята, санкция наложена.", updateStatusRequest.expiresAt());
+            }
 
-        complaintMapper.mergeToStatus(complaint, updateStatusRequest.status());
-        Complaint saved = complaintRepository.save(complaint);
-        emailService.sendStatusChangeMessage(saved.getApplicant(), saved);
-        return saved;
+            complaintMapper.mergeToStatus(complaint, updateStatusRequest.status());
+            Complaint saved = complaintRepository.save(complaint);
+            emailService.sendStatusChangeMessage(saved.getApplicant(), saved);
+            return saved;
+        });
     }
 
     private Complaint getById(Long complaintId) {
