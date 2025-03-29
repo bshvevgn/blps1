@@ -17,26 +17,38 @@ import java.time.Instant;
 @ControllerAdvice
 class CustomExceptionHandler {
 
-    @ExceptionHandler(Throwable.class)
-    public ResponseEntity<ErrorResponse> handleException(Throwable ex) {
-        log.error("Something happens...");
-        log.error(ex.getMessage());
-        if (ex instanceof CustomException) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage(), Instant.now()));
-        }
-        else if (ex instanceof NoResourceFoundException) {
-            return new ResponseEntity<>(new ErrorResponse("Такой страницы не существует", Instant.now()), HttpStatus.NOT_FOUND);
-        }
-        else if (ex instanceof BindException) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("Невалидное тело запроса", Instant.now()));
-        }
-        else if (ex instanceof BadCredentialsException) {
-            return new ResponseEntity<>(new ErrorResponse("Неверный логин или пароль", Instant.now()), HttpStatus.UNAUTHORIZED);
-
-        }
-        else {
-            return ResponseEntity.internalServerError().body(new ErrorResponse("Что-то пошло не так...", Instant.now()));
-        }
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+        loggingException(ex);
+        return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage(), Instant.now()));
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex) {
+        loggingException(ex);
+        return new ResponseEntity<>(new ErrorResponse("Такой страницы не существует", Instant.now()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ErrorResponse> handleBindException(BindException ex) {
+        loggingException(ex);
+        return ResponseEntity.badRequest().body(new ErrorResponse("Невалидное тело запроса", Instant.now()));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
+        loggingException(ex);
+        return new ResponseEntity<>(new ErrorResponse("Неверный логин или пароль", Instant.now()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<ErrorResponse> handleThrowable(Throwable ex) {
+        loggingException(ex);
+        return ResponseEntity.internalServerError().body(new ErrorResponse("Что-то пошло не так...", Instant.now()));
+    }
+
+    private void loggingException(Throwable ex) {
+        log.error("Something happens...");
+        log.error(ex.getMessage());
+    }
 }

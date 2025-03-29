@@ -34,21 +34,19 @@ public class ComplaintService {
     private final TransactionTemplate transactionTemplate;
 
     public Complaint create(ComplaintRequest complaintRequest) {
-        return transactionTemplate.execute(status -> {
-            User applicant = CommonUtils.getUserFromSecurityContext();
-            User defendant = userService.findByUsername(complaintRequest.defendant());
-            if (Objects.equals(applicant.getUsername(), defendant.getUsername())) {
-                throw new ApplicantMatchesDefendantException();
-            }
-            if (!((applicant.getRole() == RoleEnum.ROLE_USER && defendant.getRole() == RoleEnum.ROLE_LANDLORD) ||
-                    (applicant.getRole() == RoleEnum.ROLE_LANDLORD && defendant.getRole() == RoleEnum.ROLE_USER))) {
-                throw new IncorrectRoleIndicationException();
-            }
-            spamService.checkSpamComplaints(applicant);
+        User applicant = CommonUtils.getUserFromSecurityContext();
+        User defendant = userService.findByUsername(complaintRequest.defendant());
+        if (Objects.equals(applicant.getUsername(), defendant.getUsername())) {
+            throw new ApplicantMatchesDefendantException();
+        }
+        if (!((applicant.getRole() == RoleEnum.ROLE_USER && defendant.getRole() == RoleEnum.ROLE_LANDLORD) ||
+                (applicant.getRole() == RoleEnum.ROLE_LANDLORD && defendant.getRole() == RoleEnum.ROLE_USER))) {
+            throw new IncorrectRoleIndicationException();
+        }
+        spamService.checkSpamComplaints(applicant);
 
-            Complaint complaint = complaintMapper.mapToEntity(complaintRequest, applicant, defendant);
-            return complaintRepository.save(complaint);
-        });
+        Complaint complaint = complaintMapper.mapToEntity(complaintRequest, applicant, defendant);
+        return complaintRepository.save(complaint);
     }
 
     public List<Complaint> getAll() {

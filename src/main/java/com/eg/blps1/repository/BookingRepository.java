@@ -12,6 +12,6 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByListing(Listing listing);
 
-    long countByListingAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+    boolean existsByListingAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
             Listing listing, LocalDate endDate, LocalDate startDate);
 }

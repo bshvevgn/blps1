@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +15,6 @@ public class UserService {
 
     private final UserXmlRepository userXmlRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TransactionTemplate transactionTemplate;
 
     public User registerUser(RegisterRequest registerRequest) {
         if (userXmlRepository.findByUsername(registerRequest.username()).isPresent()) {

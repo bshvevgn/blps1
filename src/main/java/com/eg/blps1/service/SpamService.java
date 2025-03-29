@@ -6,7 +6,6 @@ import com.eg.blps1.model.User;
 import com.eg.blps1.repository.ComplaintRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
@@ -14,7 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class SpamService {
     private final ComplaintRepository complaintRepository;
-    private final TransactionTemplate transactionTemplate;
 
     public void checkSpamComplaints(User applicant) {
         long activeRequestsCount = complaintRepository.countByApplicantAndStatusIn(
