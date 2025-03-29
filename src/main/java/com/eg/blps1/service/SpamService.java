@@ -16,7 +16,7 @@ public class SpamService {
 
     public void checkSpamComplaints(User applicant) {
         long activeRequestsCount = complaintRepository.countByApplicantAndStatusIn(
-                applicant, List.of(ComplaintStatus.CREATED, ComplaintStatus.ASSIGNED)
+                applicant.getUsername(), List.of(ComplaintStatus.CREATED, ComplaintStatus.ASSIGNED)
         );
 
         if (activeRequestsCount >= 5) {

@@ -12,5 +12,5 @@ import java.util.List;
 public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     List<Complaint> findByStatus(ComplaintStatus status);
 
-    long countByApplicantAndStatusIn(User applicant, List<ComplaintStatus> statuses);
+    long countByApplicantAndStatusIn(String applicant, List<ComplaintStatus> statuses);
 }
