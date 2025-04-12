@@ -6,6 +6,7 @@ import com.eg.blps1.exceptions.PaymentException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
@@ -18,6 +19,12 @@ import java.time.Instant;
 @Slf4j
 @ControllerAdvice
 class CustomExceptionHandler {
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(HttpMessageNotReadableException ex) {
+        loggingException(ex);
+        return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage(), Instant.now()));
+    }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(UsernameNotFoundException ex) {
@@ -63,6 +70,6 @@ class CustomExceptionHandler {
 
     private void loggingException(Throwable ex) {
         log.error("Something happens...");
-        log.error(ex.getMessage());
+        ex.printStackTrace();
     }
 }
