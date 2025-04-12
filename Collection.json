@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "0bce60b8-1162-4db7-996c-287fe5a2fbba",
-		"name": "New Collection",
+		"name": "BLPS Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31256664"
 	},
@@ -111,7 +111,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"listingId\": 1\n}",
+					"raw": "{\n    \"listingId\": 1,\n    \"startDate\": \"2025-05-11\",\n    \"endDate\": \"2025-05-15\",\n    \"cardNumber\": \"2200400221572544\",\n    \"expirationDate\": \"12/31\",\n    \"cvv\": \"121\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
