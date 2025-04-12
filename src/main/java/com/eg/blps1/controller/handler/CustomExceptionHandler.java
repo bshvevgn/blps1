@@ -2,6 +2,7 @@ package com.eg.blps1.controller.handler;
 
 import com.eg.blps1.dto.ErrorResponse;
 import com.eg.blps1.exceptions.CustomException;
+import com.eg.blps1.exceptions.PaymentException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,12 @@ import java.time.Instant;
 @Slf4j
 @ControllerAdvice
 class CustomExceptionHandler {
+
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(PaymentException ex) {
+        loggingException(ex);
+        return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage(), Instant.now()));
+    }
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {

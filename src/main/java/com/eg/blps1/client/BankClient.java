@@ -2,9 +2,10 @@ package com.eg.blps1.client;
 
 import com.eg.blps1.client.dto.DebitRequest;
 import com.eg.blps1.client.dto.DebitResponse;
+import com.eg.blps1.client.dto.RefundRequest;
+import com.eg.blps1.exceptions.PaymentException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -20,16 +21,22 @@ public class BankClient {
                 .bodyValue(request)
                 .retrieve()
                 .onStatus(status -> status.value() == HttpStatus.PAYMENT_REQUIRED.value(),
-                        response -> {
-                            throw new RuntimeException("Insufficient funds (402)");
-                        }
-                )
-                .onStatus(HttpStatusCode::isError,
-                        response -> {
-                            throw new RuntimeException("An error occurred: " + response.statusCode());
-                        }
+                        response -> { throw new PaymentException(); }
                 )
                 .bodyToMono(DebitResponse.class)
+                .block();
+    }
+
+    public void refund(RefundRequest request) {
+        webClient
+                .post()
+                .uri(BANK_OPERATION_REFUND_LOCAL_PATH)
+                .bodyValue(request)
+                .retrieve()
+                .onStatus(status -> status.value() == HttpStatus.PAYMENT_REQUIRED.value(),
+                        response -> { throw new PaymentException(); }
+                )
+                .toBodilessEntity()
                 .block();
     }
 

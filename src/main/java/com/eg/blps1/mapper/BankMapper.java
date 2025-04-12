@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit;
 public class BankMapper {
 
     public DebitRequest mapToDebitRequest(BookingRequest request, Listing listing) {
-        long daysBetween = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
+        long daysBetween = ChronoUnit.DAYS.between(request.startDate(), request.endDate()) + 1;
 
         return new DebitRequest(
                 BigDecimal.valueOf(daysBetween * listing.getPrice()),
