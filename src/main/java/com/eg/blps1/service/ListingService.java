@@ -11,6 +11,8 @@ import com.eg.blps1.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ListingService {
@@ -24,6 +26,10 @@ public class ListingService {
 
         Listing listing = listingMapper.mapToEntity(request, user);
         return listingRepository.save(listing);
+    }
+
+    public List<Listing> getAll(){
+        return listingRepository.findAll();
     }
 
     public Listing findById(Long listingId) {
