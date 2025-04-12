@@ -59,7 +59,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/complaint/assign").hasRole("MODERATOR")
                         .requestMatchers("/complaint/status").hasRole("MODERATOR")
                         .requestMatchers("/bookings/**").hasRole("USER")
-                        .requestMatchers("/listings/**").hasRole("LANDLORD")
+                        .requestMatchers("/listings/create").hasAnyRole("LANDLORD", "MODERATOR")
+                        .requestMatchers("/listings").hasAnyRole("LANDLORD", "MODERATOR", "USER")
                         .anyRequest().permitAll()
                 );
 

@@ -8,6 +8,7 @@ import com.eg.blps1.model.User;
 import com.eg.blps1.repository.SanctionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.Instant;
 
@@ -18,6 +19,8 @@ public class SanctionService {
     private final SanctionMapper sanctionMapper;
     private final UserService userService;
     private final SanctionRepository sanctionRepository;
+    private final TransactionTemplate transactionTemplate;
+
 
     public void imposeSanction(ImposeSanctionDto imposeSanctionDto) {
         User user = userService.findByUsername(imposeSanctionDto.username());
@@ -30,8 +33,11 @@ public class SanctionService {
     }
 
     public void remove(RemoveSanctionDto removeSanctionDto) {
-        User user = userService.findByUsername(removeSanctionDto.username());
-        sanctionRepository.deleteAllByUsernameAndExpiresAtAfter(user.getUsername(), Instant.now());
+        transactionTemplate.execute(status -> {
+            User user = userService.findByUsername(removeSanctionDto.username());
+            sanctionRepository.deleteAllByUsernameAndExpiresAtAfter(user.getUsername(), Instant.now());
+            return null;
+        });
     }
 
     public boolean hasActiveSanction(User user) {
