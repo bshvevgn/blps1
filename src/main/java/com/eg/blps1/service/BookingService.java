@@ -32,7 +32,7 @@ public class BookingService {
 
     public Booking create(BookingRequest request) {
         User user = CommonUtils.getUserFromSecurityContext();
-        if (sanctionService.hasActiveSanction(user)) throw new ActiveSanctionException();
+        if (sanctionService.hasActiveSanction(user)) throw new ActiveSanctionException("Вы не можете бронировать помещение из-за действующей санкции.");
 
         Listing listing = listingService.findById(request.listingId());
         boolean isConflictBooking = bookingRepository.existsByListingAndStartDateLessThanEqualAndEndDateGreaterThanEqual(

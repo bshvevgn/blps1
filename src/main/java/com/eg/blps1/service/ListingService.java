@@ -22,7 +22,7 @@ public class ListingService {
 
     public Listing create(ListingRequest request) {
         User user = CommonUtils.getUserFromSecurityContext();
-        if (sanctionService.hasActiveSanction(user)) throw new ActiveSanctionException();
+        if (sanctionService.hasActiveSanction(user)) throw new ActiveSanctionException("Вы не можете размещать объявления из-за действующей санкции.");
 
         Listing listing = listingMapper.mapToEntity(request, user);
         return listingRepository.save(listing);
