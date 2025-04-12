@@ -1,38 +1,61 @@
 package com.eg.blps1.service;
 
+import com.eg.blps1.client.dto.DebitRequest;
+import com.eg.blps1.client.dto.DebitResponse;
 import com.eg.blps1.dto.BookingRequest;
 import com.eg.blps1.exceptions.ActiveSanctionException;
 import com.eg.blps1.exceptions.BookingConflictException;
+import com.eg.blps1.mapper.BankMapper;
 import com.eg.blps1.model.Booking;
 import com.eg.blps1.model.Listing;
 import com.eg.blps1.model.User;
 import com.eg.blps1.repository.BookingRepository;
 import com.eg.blps1.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class BookingService {
+    private final BankMapper bankMapper;
+    private final BankService bankService;
     private final SanctionService sanctionService;
-    private final BookingRepository bookingRepository;
     private final ListingService listingService;
+    private final BookingRepository bookingRepository;
     private final TransactionTemplate transactionTemplate;
 
     public Booking create(BookingRequest request) {
-        return transactionTemplate.execute(status -> {
-            User user = CommonUtils.getUserFromSecurityContext();
-            if (sanctionService.hasActiveSanction(user)) throw new ActiveSanctionException();
+        User user = CommonUtils.getUserFromSecurityContext();
+        if (sanctionService.hasActiveSanction(user)) throw new ActiveSanctionException();
 
-            Listing listing = listingService.findById(request.listingId());
-            boolean isConflictBooking = bookingRepository.existsByListingAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
-                    listing, request.endDate(), request.startDate()
-            );
-            if (isConflictBooking) throw new BookingConflictException("Объявление уже забронировано в указанный период.");
+        Listing listing = listingService.findById(request.listingId());
+        boolean isConflictBooking = bookingRepository.existsByListingAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+                listing, request.endDate(), request.startDate()
+        );
+        if (isConflictBooking) throw new BookingConflictException("Объявление уже забронировано в указанный период.");
 
-            Booking booking = new Booking(user.getUsername(), listing, request.startDate(), request.endDate());
-            return bookingRepository.save(booking);
-        });
+        try {
+            return transactionTemplate.execute(status -> {
+                try {
+                    Booking booking = new Booking(user.getUsername(), listing, request.startDate(), request.endDate());
+                    booking = bookingRepository.save(booking);
+
+                    DebitRequest debitRequest = bankMapper.mapToDebitRequest(request, listing);
+                    DebitResponse debitResponse = bankService.debit(debitRequest);
+                    return booking;
+                } catch (Throwable ex) {
+                    log.error("Вот тут случилась беда 1");
+                    ex.printStackTrace();
+                    throw ex;
+                }
+            });
+        } catch (Throwable ex) {
+            log.error("Вот тут случилась беда 2");
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 }
