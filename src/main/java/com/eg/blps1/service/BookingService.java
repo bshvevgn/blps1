@@ -15,6 +15,8 @@ import com.eg.blps1.model.Listing;
 import com.eg.blps1.model.User;
 import com.eg.blps1.repository.BookingRepository;
 import com.eg.blps1.utils.CommonUtils;
+import com.eg.blps1.utils.SerializationUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,12 +30,14 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 @RequiredArgsConstructor
 public class BookingService {
+    private final ObjectMapper objectMapper;
     private final BankMapper bankMapper;
     private final KafkaMapper kafkaMapper;
     private final BankService bankService;
     private final SanctionService sanctionService;
     private final ListingService listingService;
     private final KafkaService kafkaService;
+    private final OutboxService outboxService;
     private final BookingRepository bookingRepository;
     private final TransactionTemplate transactionTemplate;
     private final KafkaProperty kafkaProperty;
@@ -59,7 +63,8 @@ public class BookingService {
                 debitResponseRef.set(bankService.debit(debitRequest));
 
                 BookingReportDto bookingReportDto = kafkaMapper.mapToBookingReport(booking);
-                kafkaService.sendMessage(kafkaProperty.getTopics().getBookingReport().getName(), bookingReportDto);
+                String payload = SerializationUtils.getString(objectMapper, bookingReportDto);
+                outboxService.create(kafkaProperty.getTopics().getBookingReport().getName(), payload);
                 return booking;
             });
         } catch (RuntimeException ex) {

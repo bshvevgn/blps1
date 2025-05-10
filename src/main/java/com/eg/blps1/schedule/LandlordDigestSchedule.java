@@ -25,8 +25,8 @@ public class LandlordDigestSchedule {
     private final KafkaService kafkaService;
     private final KafkaProperty kafkaProperty;
 
-//    @Scheduled(cron = "${scheduler.digest-report-cron}")
-    @Scheduled(initialDelay = 1000, fixedDelay = 100000)
+    @Scheduled(cron = "${scheduler.digest-report-cron}")
+//    @Scheduled(initialDelay = 1000, fixedDelay = 100000)
     public void generateLandlordDigest() {
         log.info("Generate landlord digest..");
         LocalDate now = LocalDate.now();
