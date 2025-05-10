@@ -3,9 +3,9 @@ spring:
     name: blps1
 
   datasource:
-    url: ${LOCAL_DATASOURCE_URL}
-    username: ${LOCAL_DATASOURCE_USERNAME}
-    password: ${LOCAL_DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/sanctions_db
+    username: postgres
+    password: postgres
     driverClassName: org.postgresql.Driver
 
   jpa:
@@ -24,10 +24,10 @@ spring:
         transaction-timeout: 300
 
   mail:
-    host: ${MAIL_HOST}
-    port: ${MAIL_PORT}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    host: smtp.gmail.com
+    port: 587
+    username: lians2228@gmail.com
+    password: mrxadrcwtyxqabbu
     properties:
       mail:
         debug: false
@@ -35,7 +35,33 @@ spring:
           auth: true
           starttls:
             enable: true
+  kafka:
+    admin:
+      properties:
+        offsets.topic.replication.factor: 1
+        transaction.state.log.replication.factor: 1
+        transaction.state.log.min.isr: 1
+    bootstrapServers:
+      - localhost:9092
+    producer:
+      transaction-id-prefix: ""
+    topics:
+      digest-report:
+        name: "digest-report"
+        partitions: 1
+        replication-factor: 1
+      booking-report:
+        name: "booking-report"
+        partitions: 1
+        replication-factor: 1
+      email-sender:
+        name: "email-sender"
+        partitions: 1
+        replication-factor: 1
 
 security:
-  token: ${SECURITY_KEY}
+  token: f5fe55757d52de7095b432b04a0edd6ba322a7a832e27c4617aee8414325d4e119aff6687db964e7cdbc22ad0d61b2fa43589126196560182ff07c07628218b2
   expiration-time-ms: 172800000
+
+scheduler:
+  digest-report-cron: "0 0 0 * * 1"

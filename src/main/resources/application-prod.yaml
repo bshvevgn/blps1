@@ -29,6 +29,24 @@ spring:
           starttls:
             enable: true
 
+  kafka:
+    admin:
+      properties:
+        offsets.topic.replication.factor: 1
+        transaction.state.log.replication.factor: 1
+        transaction.state.log.min.isr: 1
+    bootstrapServers:
+      - localhost:9092
+    producer:
+      transaction-id-prefix: ""
+    topics:
+      - name: "generate-report"
+        partitions: 1
+        replication-factor: 1
+
 security:
   token: ${SECURITY_KEY}
   expiration-time-ms: 172800000
+
+scheduler:
+  landlord-digest-cron: "0 0 0 * * 1"
