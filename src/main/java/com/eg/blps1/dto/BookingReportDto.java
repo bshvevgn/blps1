@@ -8,6 +8,7 @@ public record BookingReportDto(
         LocalDate startDate,
         LocalDate endDate,
         BigDecimal totalPrice,
-        String contactEmail
+        String contactEmail,
+        String email
 ) {
 }

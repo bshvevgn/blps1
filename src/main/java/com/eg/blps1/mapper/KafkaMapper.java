@@ -25,6 +25,7 @@ public class KafkaMapper {
                 booking.getStartDate(),
                 booking.getEndDate(),
                 BigDecimal.valueOf(daysBetween * booking.getListing().getPrice()),
+                booking.getListing().getUsername(),
                 booking.getUsername()
         );
     }

@@ -26,12 +26,16 @@ public class OutboxService {
     @Transactional
     public Outbox getScheduleActualProgressOutbox() {
         Outbox outbox = outboxRepository.findByStatusAndRetryTimeBefore(OutboxStatus.INPROGRESS, Instant.now());
+        if (outbox == null) {
+            return null;
+        }
         outbox.setRetryTime(Instant.now().plusSeconds(3600));
+        outboxRepository.save(outbox);
         return outbox;
     }
 
+    @Transactional
     public void updateStatus(Outbox outbox, OutboxStatus outboxStatus) {
         outbox.setStatus(outboxStatus);
-        outboxRepository.save(outbox);
     }
 }

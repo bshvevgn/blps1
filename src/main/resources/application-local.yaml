@@ -43,8 +43,6 @@ spring:
         transaction.state.log.min.isr: 1
     bootstrapServers:
       - localhost:9092
-    producer:
-      transaction-id-prefix: ""
     topics:
       digest-report:
         name: "digest-report"

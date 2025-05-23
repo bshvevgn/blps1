@@ -16,7 +16,7 @@ public class OutboxSchedule {
     private final OutboxService outboxService;
     private final KafkaService kafkaService;
 
-    @Scheduled(fixedRate = 60)
+    @Scheduled(fixedRate = 10000)
     public void outboxSchedule() {
         log.info("Schedule outbox data..");
         Outbox outbox = outboxService.getScheduleActualProgressOutbox();

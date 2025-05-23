@@ -19,6 +19,7 @@ public class Outbox {
     private Long id;
     private String topic;
     private String payload;
+    @Enumerated(EnumType.STRING)
     private OutboxStatus status;
     private Instant retryTime;
 
