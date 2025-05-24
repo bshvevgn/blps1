@@ -20,6 +20,7 @@ public class OutboxSchedule {
     public void outboxSchedule() {
         log.info("Schedule outbox data..");
         Outbox outbox = outboxService.getScheduleActualProgressOutbox();
+        if (outbox == null) { return; }
         kafkaService.sendMessage(outbox.getTopic(), outbox.getPayload());
         outboxService.updateStatus(outbox, OutboxStatus.SUCCESS);
     }

@@ -7,7 +7,6 @@ import com.eg.blps1.repository.OutboxRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
@@ -23,7 +22,6 @@ public class OutboxService {
         outboxRepository.save(outbox);
     }
 
-    @Transactional
     public Outbox getScheduleActualProgressOutbox() {
         Outbox outbox = outboxRepository.findByStatusAndRetryTimeBefore(OutboxStatus.INPROGRESS, Instant.now());
         if (outbox == null) {
@@ -34,7 +32,6 @@ public class OutboxService {
         return outbox;
     }
 
-    @Transactional
     public void updateStatus(Outbox outbox, OutboxStatus outboxStatus) {
         outbox.setStatus(outboxStatus);
     }
