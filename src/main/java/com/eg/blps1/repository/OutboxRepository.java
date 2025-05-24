@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.Instant;
 
 public interface OutboxRepository extends JpaRepository<Outbox, Long> {
-    Outbox findByStatusAndRetryTimeBefore(OutboxStatus status, Instant retryTime);
+    Outbox findFirstByStatusAndRetryTimeBefore(OutboxStatus status, Instant retryTime);
 }

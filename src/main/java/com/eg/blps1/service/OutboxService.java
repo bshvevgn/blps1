@@ -23,7 +23,7 @@ public class OutboxService {
     }
 
     public Outbox getScheduleActualProgressOutbox() {
-        Outbox outbox = outboxRepository.findByStatusAndRetryTimeBefore(OutboxStatus.INPROGRESS, Instant.now());
+        Outbox outbox = outboxRepository.findFirstByStatusAndRetryTimeBefore(OutboxStatus.INPROGRESS, Instant.now());
         if (outbox == null) {
             return null;
         }
@@ -34,5 +34,6 @@ public class OutboxService {
 
     public void updateStatus(Outbox outbox, OutboxStatus outboxStatus) {
         outbox.setStatus(outboxStatus);
+        outboxRepository.save(outbox);
     }
 }
