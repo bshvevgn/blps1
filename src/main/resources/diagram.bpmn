@@ -20,7 +20,7 @@
       <bpmn:incoming>Flow_0w7mmwu</bpmn:incoming>
       <bpmn:outgoing>Flow_0w8x6l8</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:startEvent id="StartEvent_0435lxt" name="Listing Request">
+    <bpmn:startEvent id="StartEvent_0435lxt" name="Listing Request" camunda:initiator="initiator">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="username" label="Имя пользователя" type="string" />
@@ -34,7 +34,7 @@
     </bpmn:startEvent>
     <bpmn:boundaryEvent id="Event_1ny8z64" name="Login Error" attachedToRef="Activity_1r401cm">
       <bpmn:outgoing>Flow_0gfvxge</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0o3y3yr" errorRef="Error_124m2eb" camunda:errorCodeVariable="errorCode" camunda:errorMessageVariable="errorMessage" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0o3y3yr" errorRef="Error_124m2eb" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0gfvxge" sourceRef="Event_1ny8z64" targetRef="Activity_0nk3nb2" />
     <bpmn:sequenceFlow id="Flow_0w7mmwu" sourceRef="Activity_0nk3nb2" targetRef="Activity_1r401cm" />
@@ -50,7 +50,7 @@
       <bpmn:outgoing>Flow_1pewqeu</bpmn:outgoing>
       <bpmn:outgoing>Flow_1jvln1d</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_127mpdi" name="Check Sanctions" camunda:class="com.eg.blps1.delegate.SanctionCheckerDelegate">
+    <bpmn:serviceTask id="Activity_127mpdi" name="Check Sanctions" camunda:class="${sanctionCheckerDelegate}">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_0vpilyl</bpmn:incoming>
       <bpmn:outgoing>Flow_1mo1pjc</bpmn:outgoing>
@@ -68,11 +68,17 @@
       <bpmn:outgoing>Flow_0vpilyl</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0vpilyl" sourceRef="Activity_01sae90" targetRef="Activity_127mpdi" />
-    <bpmn:userTask id="Activity_0nk3nb2" name="Enter Again">
+    <bpmn:userTask id="Activity_0nk3nb2" name="Enter Again" camunda:assignee="${initiator}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="username" label="Имя пользователя" type="string" />
           <camunda:formField id="password" label="Пароль" type="string" />
+          <camunda:formField id="errorMessageField" type="string" defaultValue="${errorMessage}">
+            <camunda:properties />
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0gfvxge</bpmn:incoming>
@@ -200,12 +206,12 @@
         <dc:Bounds x="430" y="100" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0gu55gn_di" bpmnElement="Activity_0nk3nb2">
-        <dc:Bounds x="430" y="330" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_16uxxj3" bpmnElement="Activity_01sae90">
         <dc:Bounds x="430" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0gu55gn_di" bpmnElement="Activity_0nk3nb2">
+        <dc:Bounds x="430" y="330" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0m98u83_di" bpmnElement="Event_0m98u83">

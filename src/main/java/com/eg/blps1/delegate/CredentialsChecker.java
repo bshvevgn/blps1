@@ -21,6 +21,6 @@ public class CredentialsChecker implements JavaDelegate {
 
 //        User user = userService.findByUsername(username);
 
-        throw new BpmnError("permissionDenied", "Доступ запрещён");
+        throw new BpmnError("permissionDenied", "Ваша группа не имеет нужных привелегий");
     }
 }
