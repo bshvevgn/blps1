@@ -6,6 +6,7 @@ import com.eg.blps1.model.Listing;
 import com.eg.blps1.model.User;
 import com.eg.blps1.repository.ListingRepository;
 import com.eg.blps1.service.UserService;
+import com.eg.blps1.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -22,13 +23,16 @@ public class ListingCreatorDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-        String username = (String) execution.getVariable("username");
         String address = (String) execution.getVariable("address");
+        Double price = (Double) execution.getVariable("price");
         String note = (String) execution.getVariable("note");
-        double price = (Double) execution.getVariable("price");
 
-        User user = userService.findByUsername(username);
+        String username = (String) execution.getVariable("username");
+
+
         ListingRequest request = new ListingRequest(address, price, note);
+        User user = userService.findByUsername(username);
+
         Listing listing = listingMapper.mapToEntity(request, user);
 
         listingRepository.save(listing);

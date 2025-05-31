@@ -26,18 +26,27 @@ public class ListingController {
     private final ListingMapper listingMapper;
     private final RuntimeService runtimeService;
 
+
     @GetMapping
     public List<ListingResponse> getAllRequests() {
         List<Listing> listings = listingService.getAll();
         return listingMapper.mapToListListing(listings);
     }
 
+//    @PostMapping("/create")
+//    @ResponseStatus(HttpStatus.OK)
+//    public void createListing(@Valid @RequestBody ListingRequest request) {
+//        listingService.create(request);
+//    }
+
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
     public void createListing(@Valid @RequestBody ListingRequest request) {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("listingRequest", request);
+        variables.put("address", request.address());
+        variables.put("price", request.price());
+        variables.put("note", request.note());
+
         runtimeService.startProcessInstanceByKey("listing_creation_process", variables);
     }
-
 }

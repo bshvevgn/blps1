@@ -63,3 +63,7 @@ security:
 
 scheduler:
   digest-report-cron: "0 0 0 * * 1"
+
+camunda:
+  bpm:
+    auto-deployment-enabled: true

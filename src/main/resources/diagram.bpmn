@@ -3,20 +3,34 @@
   <bpmn:collaboration id="Collaboration_1eqjcfm">
     <bpmn:participant id="Participant_1y4ujto" name="Create Listing" processRef="listing_creation_process" />
   </bpmn:collaboration>
-  <bpmn:process id="listing_creation_process" isExecutable="false">
+  <bpmn:process id="listing_creation_process" name="listing_creation_process" isExecutable="true" camunda:historyTimeToLive="30">
     <bpmn:endEvent id="Event_0m98u83" name="Created">
       <bpmn:incoming>Flow_09e5x9y</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:startEvent id="StartEvent_0435lxt">
-      <bpmn:outgoing>Flow_1mpwzxj</bpmn:outgoing>
+    <bpmn:startEvent id="StartEvent_0435lxt" name="Listing Request">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="address" label="Адрес" type="string">
+            <camunda:properties />
+          </camunda:formField>
+          <camunda:formField id="price" label="Цена" type="string" />
+          <camunda:formField id="note" label="Описание" type="string" />
+          <camunda:formField id="username" label="Имя пользователя" type="string" />
+          <camunda:formField id="password" label="Пароль" type="string">
+            <camunda:properties />
+            <camunda:validation />
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1dhl3a9</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Activity_127mpdi" name="Check Sanction" camunda:class="com.eg.blps1.delegate.SanctionCheckerDelegate">
+    <bpmn:serviceTask id="Activity_127mpdi" name="Check Sanctions" camunda:class="com.eg.blps1.delegate.SanctionCheckerDelegate">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:outputParameter name="Output_3gspvqg">${hasSanctions}</camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1mpwzxj</bpmn:incoming>
+      <bpmn:incoming>Flow_1dhl3a9</bpmn:incoming>
       <bpmn:outgoing>Flow_1mo1pjc</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_1h2bkcj" name="User has sanctions?">
@@ -32,7 +46,6 @@
       <bpmn:incoming>Flow_1pewqeu</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_09e5x9y" sourceRef="Activity_1ac5l60" targetRef="Event_0m98u83" />
-    <bpmn:sequenceFlow id="Flow_1mpwzxj" sourceRef="StartEvent_0435lxt" targetRef="Activity_127mpdi" />
     <bpmn:sequenceFlow id="Flow_1mo1pjc" sourceRef="Activity_127mpdi" targetRef="Gateway_1h2bkcj" />
     <bpmn:sequenceFlow id="Flow_1pewqeu" sourceRef="Gateway_1h2bkcj" targetRef="Event_0gdezm3">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasSanctions == true}</bpmn:conditionExpression>
@@ -40,11 +53,12 @@
     <bpmn:sequenceFlow id="Flow_1jvln1d" sourceRef="Gateway_1h2bkcj" targetRef="Activity_1ac5l60">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasSanctions == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1dhl3a9" sourceRef="StartEvent_0435lxt" targetRef="Activity_127mpdi" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1eqjcfm">
       <bpmndi:BPMNShape id="Participant_1y4ujto_di" bpmnElement="Participant_1y4ujto" isHorizontal="true">
-        <dc:Bounds x="156" y="62" width="600" height="218" />
+        <dc:Bounds x="156" y="62" width="600" height="288" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0m98u83_di" bpmnElement="Event_0m98u83">
@@ -55,6 +69,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_0435lxt">
         <dc:Bounds x="206" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="190" y="165" width="76" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_05pjg1u_di" bpmnElement="Activity_127mpdi">
         <dc:Bounds x="290" y="100" width="100" height="80" />
@@ -80,10 +97,6 @@
         <di:waypoint x="710" y="140" />
         <di:waypoint x="710" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1mpwzxj_di" bpmnElement="Flow_1mpwzxj">
-        <di:waypoint x="242" y="140" />
-        <di:waypoint x="290" y="140" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mo1pjc_di" bpmnElement="Flow_1mo1pjc">
         <di:waypoint x="390" y="140" />
         <di:waypoint x="455" y="140" />
@@ -95,6 +108,10 @@
       <bpmndi:BPMNEdge id="Flow_1jvln1d_di" bpmnElement="Flow_1jvln1d">
         <di:waypoint x="505" y="140" />
         <di:waypoint x="560" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dhl3a9_di" bpmnElement="Flow_1dhl3a9">
+        <di:waypoint x="242" y="140" />
+        <di:waypoint x="290" y="140" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
