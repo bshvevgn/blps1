@@ -10,7 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import org.camunda.bpm.engine.RuntimeService;
+import org.springframework.http.ResponseEntity;
+
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/listings")
@@ -18,7 +24,7 @@ import java.util.List;
 public class ListingController {
     private final ListingService listingService;
     private final ListingMapper listingMapper;
-
+    private final RuntimeService runtimeService;
 
     @GetMapping
     public List<ListingResponse> getAllRequests() {
@@ -29,6 +35,9 @@ public class ListingController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
     public void createListing(@Valid @RequestBody ListingRequest request) {
-        listingService.create(request);
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("listingRequest", request);
+        runtimeService.startProcessInstanceByKey("listing_creation_process", variables);
     }
+
 }
