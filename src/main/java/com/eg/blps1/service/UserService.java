@@ -5,7 +5,7 @@ import com.eg.blps1.exceptions.UsernameAlreadyExistException;
 import com.eg.blps1.model.User;
 import com.eg.blps1.repository.UserXmlRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +32,6 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userXmlRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь с таким именем не найден: " + username));
+                .orElseThrow(() -> new BpmnError("userNotFound", "Неверный логин или пароль"));
     }
 }
