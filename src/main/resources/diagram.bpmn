@@ -15,11 +15,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasSanctions == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_1r401cm" name="Check Credentials" camunda:delegateExpression="${credentialsChecker}">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="Output_3gspvqg">${hasSanctions}</camunda:outputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1dhl3a9</bpmn:incoming>
       <bpmn:incoming>Flow_0w7mmwu</bpmn:incoming>
       <bpmn:outgoing>Flow_0w8x6l8</bpmn:outgoing>
@@ -55,11 +51,7 @@
       <bpmn:outgoing>Flow_1jvln1d</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="Activity_127mpdi" name="Check Sanctions" camunda:class="com.eg.blps1.delegate.SanctionCheckerDelegate">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="Output_0ckj3mu">${hasSanctions}</camunda:outputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_0vpilyl</bpmn:incoming>
       <bpmn:outgoing>Flow_1mo1pjc</bpmn:outgoing>
     </bpmn:serviceTask>
