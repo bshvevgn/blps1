@@ -8,6 +8,7 @@ import com.eg.blps1.repository.ListingRepository;
 import com.eg.blps1.service.UserService;
 import com.eg.blps1.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,21 @@ public class ListingCreatorDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
         String address = (String) execution.getVariable("address");
-        Double price = (Double) execution.getVariable("price");
+        String priceRaw = String.valueOf(execution.getVariable("price"));
         String note = (String) execution.getVariable("note");
+
+        if (address == null || address.trim().isEmpty() ||
+                priceRaw == null || priceRaw.trim().isEmpty() ||
+                note == null || note.trim().isEmpty()) {
+            throw new BpmnError("validationError", "Все поля должны быть заполнены");
+        }
+
+        double price;
+        try {
+            price = Double.parseDouble(priceRaw);
+        } catch (NumberFormatException e) {
+            throw new BpmnError("validationError", "Цена должна быть числом");
+        }
 
         String username = (String) execution.getVariable("username");
 
@@ -35,6 +49,16 @@ public class ListingCreatorDelegate implements JavaDelegate {
 
         Listing listing = listingMapper.mapToEntity(request, user);
 
-        listingRepository.save(listing);
+        try {
+            Listing saved = listingRepository.save(listing);
+            if (saved.getId() != null) {
+                execution.setVariable("statusMessage", "Объявление успешно добавлено");
+            } else {
+                throw new BpmnError("dbError", "Ошибка при добавлении объявления");
+            }
+        } catch (Exception e) {
+            throw new BpmnError("dbError", "Ошибка при добавлении объявления: " + e.getMessage());
+        }
+
     }
 }

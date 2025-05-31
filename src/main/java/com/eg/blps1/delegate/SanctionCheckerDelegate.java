@@ -1,10 +1,12 @@
 package com.eg.blps1.delegate;
 
+import com.eg.blps1.model.RoleEnum;
 import com.eg.blps1.model.User;
 import com.eg.blps1.service.SanctionService;
 import com.eg.blps1.service.UserService;
 import com.eg.blps1.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,7 @@ public class SanctionCheckerDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
         String username = (String) execution.getVariable("username");
-
         User user = userService.findByUsername(username);
-
         boolean hasSanction = sanctionService.hasActiveSanction(user);
         execution.setVariable("hasSanctions", hasSanction);
     }
