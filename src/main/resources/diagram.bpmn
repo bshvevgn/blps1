@@ -6,6 +6,7 @@
     <bpmn:participant id="Participant_0f9v6ws" name="Create Booking" processRef="booking_creation_process" />
     <bpmn:participant id="Participant_1hun4bn" name="Impose Sanction" processRef="impose_sanction_process" />
     <bpmn:participant id="Participant_1m7ldb2" name="Remove Sanction" processRef="remove_sanction_process" />
+    <bpmn:participant id="Participant_05k7bfl" name="Create User" processRef="Process_1huqrx4" />
   </bpmn:collaboration>
   <bpmn:process id="listing_creation_process" name="listing_creation_process" isExecutable="true" camunda:historyTimeToLive="30">
     <bpmn:sequenceFlow id="Flow_09e5x9y" sourceRef="Activity_1ac5l60" targetRef="Activity_16mer94" />
@@ -167,134 +168,49 @@
   </bpmn:process>
   <bpmn:error id="Error_124m2eb" name="authError" />
   <bpmn:process id="complaint_application_creation_process" name="complaint_application_creation_process" isExecutable="true" camunda:historyTimeToLive="30">
-    <bpmn:userTask id="Activity_1dw4dpq" name="Enter Complaint Info" camunda:assignee="${initiator}">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="title" label="Причина" type="string" />
-          <camunda:formField id="description" label="Описание проблемы" type="string" />
-          <camunda:formField id="defendant" label="Адрес жалобы" type="string" />
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0loqn8g</bpmn:incoming>
-      <bpmn:outgoing>Flow_17cc94j</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_17cc94j" sourceRef="Activity_1dw4dpq" targetRef="Activity_1ax8136" />
-    <bpmn:sequenceFlow id="Flow_0d9ut8f" sourceRef="Activity_1ax8136" targetRef="Gateway_0do9h53" />
+    <bpmn:sequenceFlow id="Flow_069r53n" sourceRef="Event_19laxmf" targetRef="Activity_1t8k1qk" />
+    <bpmn:sequenceFlow id="Flow_0fscciz" sourceRef="Activity_1ayxh22" targetRef="Event_14j9j1u" />
+    <bpmn:sequenceFlow id="Flow_1j96puy" sourceRef="Event_1c5n3u6" targetRef="Activity_1ayxh22" />
+    <bpmn:sequenceFlow id="Flow_0nlakd8" sourceRef="Activity_10bsmkk" targetRef="Event_1tlai8o" />
+    <bpmn:sequenceFlow id="Flow_0x7ejoc" sourceRef="Activity_1bwr6x4" targetRef="Activity_10bsmkk" />
+    <bpmn:sequenceFlow id="Flow_0oktubo" sourceRef="Activity_1t8k1qk" targetRef="Activity_1ax8136" />
     <bpmn:sequenceFlow id="Flow_1dungul" sourceRef="Gateway_0do9h53" targetRef="Activity_1bwr6x4">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${complaintDeclined == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0x7ejoc" sourceRef="Activity_1bwr6x4" targetRef="Activity_10bsmkk" />
+    <bpmn:sequenceFlow id="Flow_0d9ut8f" sourceRef="Activity_1ax8136" targetRef="Gateway_0do9h53" />
     <bpmn:sequenceFlow id="Flow_0k8ydxh" sourceRef="Gateway_0do9h53" targetRef="Activity_01uoubh">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${complaintDeclined == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0nq4qj8" name="Check Credentials" camunda:class="com.eg.blps1.delegate.CredentialsCheckDelegate">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="Output_3gspvqg">${hasSanctions}</camunda:outputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_05q5v62</bpmn:incoming>
-      <bpmn:incoming>Flow_1bbezq3</bpmn:incoming>
-      <bpmn:outgoing>Flow_0loqn8g</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0loqn8g" sourceRef="Activity_0nq4qj8" targetRef="Activity_1dw4dpq" />
+    <bpmn:sequenceFlow id="Flow_000bvdl" sourceRef="Activity_01uoubh" targetRef="Event_1fhim9k" />
+    <bpmn:sequenceFlow id="Flow_1jmserq" sourceRef="Event_19itpur" targetRef="Activity_1g7wicg" />
+    <bpmn:sequenceFlow id="Flow_1bbezq3" sourceRef="Activity_1g7wicg" targetRef="Activity_0nq4qj8" />
     <bpmn:sequenceFlow id="Flow_05q5v62" sourceRef="Event_1git2r0" targetRef="Activity_0nq4qj8" />
+    <bpmn:sequenceFlow id="Flow_17cc94j" sourceRef="Activity_1dw4dpq" targetRef="Activity_1ax8136" />
+    <bpmn:sequenceFlow id="Flow_0loqn8g" sourceRef="Activity_0nq4qj8" targetRef="Activity_1dw4dpq" />
     <bpmn:boundaryEvent id="Event_19itpur" name="Login Error" attachedToRef="Activity_0nq4qj8">
       <bpmn:outgoing>Flow_1jmserq</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_063rknc" errorRef="Error_124m2eb" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_1jmserq" sourceRef="Event_19itpur" targetRef="Activity_1g7wicg" />
-    <bpmn:sequenceFlow id="Flow_1bbezq3" sourceRef="Activity_1g7wicg" targetRef="Activity_0nq4qj8" />
-    <bpmn:userTask id="Activity_1g7wicg" name="Enter Again" camunda:assignee="${initiator}">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="username" label="Имя пользователя" type="string" />
-          <camunda:formField id="password" label="Пароль" type="string" />
-          <camunda:formField id="errorMessageField" type="string" defaultValue="${errorMessage}">
-            <camunda:properties />
-            <camunda:validation>
-              <camunda:constraint name="readonly" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1jmserq</bpmn:incoming>
-      <bpmn:outgoing>Flow_1bbezq3</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_000bvdl" sourceRef="Activity_01uoubh" targetRef="Event_1fhim9k" />
-    <bpmn:sequenceFlow id="Flow_0nlakd8" sourceRef="Activity_10bsmkk" targetRef="Event_1tlai8o" />
-    <bpmn:endEvent id="Event_1fhim9k" name="Declined">
-      <bpmn:incoming>Flow_000bvdl</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:userTask id="Activity_01uoubh" name="Error Message" camunda:assignee="${initiator}">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="statusMessageField" type="string" defaultValue="${statusMessage}">
-            <camunda:properties />
-            <camunda:validation>
-              <camunda:constraint name="readonly" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0k8ydxh</bpmn:incoming>
-      <bpmn:outgoing>Flow_000bvdl</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:exclusiveGateway id="Gateway_0do9h53" name="User has more than 5 complaints?">
-      <bpmn:incoming>Flow_0d9ut8f</bpmn:incoming>
-      <bpmn:outgoing>Flow_1dungul</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0k8ydxh</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_1ax8136" name="Check Spam" camunda:class="com.eg.blps1.delegate.SanctionCheckerDelegate">
-      <bpmn:extensionElements />
-      <bpmn:incoming>Flow_17cc94j</bpmn:incoming>
-      <bpmn:incoming>Flow_0oktubo</bpmn:incoming>
-      <bpmn:outgoing>Flow_0d9ut8f</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1bwr6x4" name="Create Complaint" camunda:class="com.eg.blps1.delegate.ListingCreatorDelegate">
-      <bpmn:incoming>Flow_1dungul</bpmn:incoming>
-      <bpmn:outgoing>Flow_0x7ejoc</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:userTask id="Activity_10bsmkk" name="Success Message" camunda:assignee="${initiator}">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="statusMessageField" type="string" defaultValue="${statusMessage}">
-            <camunda:properties />
-            <camunda:validation>
-              <camunda:constraint name="readonly" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0x7ejoc</bpmn:incoming>
-      <bpmn:outgoing>Flow_0nlakd8</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:endEvent id="Event_1tlai8o" name="Created">
-      <bpmn:incoming>Flow_0nlakd8</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:userTask id="Activity_1ayxh22" name="Error Message" camunda:assignee="${initiator}">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="statusMessageField" type="string" defaultValue="${errorMessage}">
-            <camunda:properties />
-            <camunda:validation>
-              <camunda:constraint name="readonly" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1j96puy</bpmn:incoming>
-      <bpmn:outgoing>Flow_0fscciz</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:endEvent id="Event_14j9j1u" name="Error">
-      <bpmn:incoming>Flow_0fscciz</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0fscciz" sourceRef="Activity_1ayxh22" targetRef="Event_14j9j1u" />
     <bpmn:boundaryEvent id="Event_1c5n3u6" name="DB error" attachedToRef="Activity_1bwr6x4">
       <bpmn:outgoing>Flow_1j96puy</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0o6vakk" errorRef="Error_0rleadb" />
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_1j96puy" sourceRef="Event_1c5n3u6" targetRef="Activity_1ayxh22" />
+    <bpmn:boundaryEvent id="Event_19laxmf" name="Invalid form data" attachedToRef="Activity_1bwr6x4">
+      <bpmn:outgoing>Flow_069r53n</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1vgkg8e" errorRef="Error_1uxq8l1" />
+    </bpmn:boundaryEvent>
+    <bpmn:startEvent id="Event_1git2r0" name="Complaint Request" camunda:initiator="initiator">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="username" label="Имя пользователя" type="string" />
+          <camunda:formField id="password" label="Пароль" type="string">
+            <camunda:properties />
+            <camunda:validation />
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_05q5v62</bpmn:outgoing>
+    </bpmn:startEvent>
     <bpmn:userTask id="Activity_1t8k1qk" name="Enter Complaint Info" camunda:assignee="${initiator}">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -311,24 +227,109 @@
       <bpmn:incoming>Flow_069r53n</bpmn:incoming>
       <bpmn:outgoing>Flow_0oktubo</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0oktubo" sourceRef="Activity_1t8k1qk" targetRef="Activity_1ax8136" />
-    <bpmn:boundaryEvent id="Event_19laxmf" name="Invalid form data" attachedToRef="Activity_1bwr6x4">
-      <bpmn:outgoing>Flow_069r53n</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1vgkg8e" errorRef="Error_1uxq8l1" />
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_069r53n" sourceRef="Event_19laxmf" targetRef="Activity_1t8k1qk" />
-    <bpmn:startEvent id="Event_1git2r0" name="Complaint Request" camunda:initiator="initiator">
+    <bpmn:endEvent id="Event_14j9j1u" name="Error">
+      <bpmn:incoming>Flow_0fscciz</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_1ayxh22" name="Error Message" camunda:assignee="${initiator}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="username" label="Имя пользователя" type="string" />
-          <camunda:formField id="password" label="Пароль" type="string">
+          <camunda:formField id="statusMessageField" type="string" defaultValue="${errorMessage}">
             <camunda:properties />
-            <camunda:validation />
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
           </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
-      <bpmn:outgoing>Flow_05q5v62</bpmn:outgoing>
-    </bpmn:startEvent>
+      <bpmn:incoming>Flow_1j96puy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fscciz</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1tlai8o" name="Created">
+      <bpmn:incoming>Flow_0nlakd8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_10bsmkk" name="Success Message" camunda:assignee="${initiator}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="statusMessageField" type="string" defaultValue="${statusMessage}">
+            <camunda:properties />
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0x7ejoc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nlakd8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_1bwr6x4" name="Create Complaint" camunda:class="com.eg.blps1.delegate.ListingCreatorDelegate">
+      <bpmn:incoming>Flow_1dungul</bpmn:incoming>
+      <bpmn:outgoing>Flow_0x7ejoc</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1ax8136" name="Check Spam" camunda:class="com.eg.blps1.delegate.SanctionCheckerDelegate">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_17cc94j</bpmn:incoming>
+      <bpmn:incoming>Flow_0oktubo</bpmn:incoming>
+      <bpmn:outgoing>Flow_0d9ut8f</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0do9h53" name="User has more than 5 complaints?">
+      <bpmn:incoming>Flow_0d9ut8f</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dungul</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0k8ydxh</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_01uoubh" name="Error Message" camunda:assignee="${initiator}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="statusMessageField" type="string" defaultValue="${statusMessage}">
+            <camunda:properties />
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0k8ydxh</bpmn:incoming>
+      <bpmn:outgoing>Flow_000bvdl</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1fhim9k" name="Declined">
+      <bpmn:incoming>Flow_000bvdl</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_1g7wicg" name="Enter Again" camunda:assignee="${initiator}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="username" label="Имя пользователя" type="string" />
+          <camunda:formField id="password" label="Пароль" type="string" />
+          <camunda:formField id="errorMessageField" type="string" defaultValue="${errorMessage}">
+            <camunda:properties />
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1jmserq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bbezq3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0nq4qj8" name="Check Credentials" camunda:class="com.eg.blps1.delegate.CredentialsCheckDelegate">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="Output_3gspvqg">${hasSanctions}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05q5v62</bpmn:incoming>
+      <bpmn:incoming>Flow_1bbezq3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0loqn8g</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_1dw4dpq" name="Enter Complaint Info" camunda:assignee="${initiator}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="title" label="Причина" type="string" />
+          <camunda:formField id="description" label="Описание проблемы" type="string" />
+          <camunda:formField id="defendant" label="Адрес жалобы" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0loqn8g</bpmn:incoming>
+      <bpmn:outgoing>Flow_17cc94j</bpmn:outgoing>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmn:process id="booking_creation_process" name="booking_creation_process" isExecutable="true" camunda:historyTimeToLive="30">
     <bpmn:serviceTask id="Activity_0yeusg5" name="Check Credentials" camunda:delegateExpression="${credentialsChecker}">
@@ -801,6 +802,72 @@
   </bpmn:process>
   <bpmn:error id="Error_0h5zxsu" name="bookingConflictError" />
   <bpmn:error id="Error_1kh9cv4" name="bookingError" />
+  <bpmn:process id="Process_1huqrx4" name="register_user" isExecutable="true" camunda:historyTimeToLive="30">
+    <bpmn:sequenceFlow id="Flow_1kzr7we" sourceRef="Event_1f43o5n" targetRef="Activity_1x95y0y" />
+    <bpmn:sequenceFlow id="Flow_1c2v414" sourceRef="Activity_1x95y0y" targetRef="Activity_0scossl" />
+    <bpmn:sequenceFlow id="Flow_1atb2an" sourceRef="Event_0rebals" targetRef="Activity_1lwn1yu" />
+    <bpmn:startEvent id="Event_1f43o5n" name="Registration Request" camunda:initiator="initiator">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="username" label="Имя пользователя" type="string" />
+          <camunda:formField id="password" label="Пароль" type="string">
+            <camunda:properties />
+            <camunda:validation />
+          </camunda:formField>
+          <camunda:formField id="role" label="Роль" type="enum" defaultValue="ROLE_USER">
+            <camunda:value id="ROLE_USER" name="ROLE_USER" />
+            <camunda:value id="ROLE_MODERATOR" name="ROLE_MODERATOR" />
+            <camunda:value id="ROLE_LANDLORD" name="ROLE_LANDLORD" />
+            <camunda:value id="ROLE_ADMIN" name="ROLE_ADMIN" />
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1kzr7we</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_1x95y0y" name="Save user" camunda:class="com.eg.blps1.delegate.RegisterDelegate">
+      <bpmn:incoming>Flow_1kzr7we</bpmn:incoming>
+      <bpmn:outgoing>Flow_1c2v414</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_0rebals" name="Register Error" attachedToRef="Activity_1x95y0y">
+      <bpmn:outgoing>Flow_1atb2an</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1h1fwq4" errorRef="Error_124m2eb" camunda:errorMessageVariable="errorMessage" />
+    </bpmn:boundaryEvent>
+    <bpmn:userTask id="Activity_0scossl" name="Success message" camunda:assignee="${initiator}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="statusMessageField" type="string" defaultValue="${statusMessage}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1c2v414</bpmn:incoming>
+      <bpmn:outgoing>Flow_0a4helc</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1lwn1yu" name="Error message" camunda:assignee="${initiator}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="errorMessageField" type="string" defaultValue="${errorMessage}">
+            <camunda:properties />
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1atb2an</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v1bu37</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1n3gv48" name="Success">
+      <bpmn:incoming>Flow_0a4helc</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0a4helc" sourceRef="Activity_0scossl" targetRef="Event_1n3gv48" />
+    <bpmn:sequenceFlow id="Flow_1v1bu37" sourceRef="Activity_1lwn1yu" targetRef="Event_0y3zeya" />
+    <bpmn:endEvent id="Event_0y3zeya" name="Error">
+      <bpmn:incoming>Flow_1v1bu37</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1eqjcfm">
       <bpmndi:BPMNShape id="Participant_1y4ujto_di" bpmnElement="Participant_1y4ujto" isHorizontal="true">
@@ -1602,6 +1669,69 @@
       <bpmndi:BPMNEdge id="BPMNEdge_1ne80r5" bpmnElement="Flow_1xeei8i">
         <di:waypoint x="2610" y="810" />
         <di:waypoint x="2662" y="810" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_1aao6cc" bpmnElement="Participant_05k7bfl" isHorizontal="true">
+        <dc:Bounds x="220" y="-390" width="630" height="290" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1w29y8b" bpmnElement="Event_1f43o5n">
+        <dc:Bounds x="272" y="-270" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="261" y="-306" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0uoc1wp" bpmnElement="Activity_1x95y0y">
+        <dc:Bounds x="410" y="-292" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_12cerx7" bpmnElement="Activity_0scossl">
+        <dc:Bounds x="580" y="-350" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1eadigy" bpmnElement="Activity_1lwn1yu">
+        <dc:Bounds x="580" y="-210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1n3gv48_di" bpmnElement="Event_1n3gv48">
+        <dc:Bounds x="772" y="-328" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="770" y="-285" width="42" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0y3zeya_di" bpmnElement="Event_0y3zeya">
+        <dc:Bounds x="772" y="-188" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="778" y="-145" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_10r9ky3" bpmnElement="Event_0rebals">
+        <dc:Bounds x="472" y="-230" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="456" y="-187" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_01s5ofh" bpmnElement="Flow_1kzr7we">
+        <di:waypoint x="308" y="-252" />
+        <di:waypoint x="410" y="-252" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1m75bck" bpmnElement="Flow_1c2v414">
+        <di:waypoint x="510" y="-252" />
+        <di:waypoint x="545" y="-252" />
+        <di:waypoint x="545" y="-310" />
+        <di:waypoint x="580" y="-310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1qv6x50" bpmnElement="Flow_1atb2an">
+        <di:waypoint x="490" y="-194" />
+        <di:waypoint x="490" y="-170" />
+        <di:waypoint x="580" y="-170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0a4helc_di" bpmnElement="Flow_0a4helc">
+        <di:waypoint x="680" y="-310" />
+        <di:waypoint x="772" y="-310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v1bu37_di" bpmnElement="Flow_1v1bu37">
+        <di:waypoint x="680" y="-170" />
+        <di:waypoint x="772" y="-170" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -1,7 +1,6 @@
 package com.eg.blps1.service;
 
 import com.eg.blps1.dto.RegisterRequest;
-import com.eg.blps1.exceptions.UsernameAlreadyExistException;
 import com.eg.blps1.model.User;
 import com.eg.blps1.repository.UserXmlRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ public class UserService {
 
     public User registerUser(RegisterRequest registerRequest) {
         if (userXmlRepository.findByUsername(registerRequest.username()).isPresent()) {
-            throw new UsernameAlreadyExistException();
+            throw new BpmnError("userAlreadyExist", "Такой юзернейм уже занят");
         }
 
         return userXmlRepository.save(
