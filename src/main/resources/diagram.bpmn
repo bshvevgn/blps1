@@ -7,6 +7,7 @@
     <bpmn:participant id="Participant_1hun4bn" name="Impose Sanction" processRef="impose_sanction_process" />
     <bpmn:participant id="Participant_1m7ldb2" name="Remove Sanction" processRef="remove_sanction_process" />
     <bpmn:participant id="Participant_05k7bfl" name="Create User" processRef="Process_1huqrx4" />
+    <bpmn:participant id="get_listings_process" name="Get Listings" processRef="Process_1lpkqrp" />
   </bpmn:collaboration>
   <bpmn:process id="listing_creation_process" name="listing_creation_process" isExecutable="true" camunda:historyTimeToLive="30">
     <bpmn:serviceTask id="Activity_1r401cm" name="Check Credentials" camunda:delegateExpression="${credentialsChecker}">
@@ -863,6 +864,63 @@
     <bpmn:sequenceFlow id="Flow_0a4helc" sourceRef="Activity_0scossl" targetRef="Event_1n3gv48" />
     <bpmn:sequenceFlow id="Flow_1atb2an" sourceRef="Event_0rebals" targetRef="Activity_1lwn1yu" />
     <bpmn:sequenceFlow id="Flow_1v1bu37" sourceRef="Activity_1lwn1yu" targetRef="Event_0y3zeya" />
+  </bpmn:process>
+  <bpmn:process id="Process_1lpkqrp" name="get_listings_process" isExecutable="true" camunda:historyTimeToLive="30">
+    <bpmn:startEvent id="Event_1sgk3a2" camunda:initiator="initiator">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="username" label="Имя пользователя" type="string" />
+          <camunda:formField id="password" label="Пароль" type="string">
+            <camunda:properties />
+            <camunda:validation />
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1r6ptoi</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_1syk2nb" name="Check Credentials" camunda:delegateExpression="${credentialsChecker}">
+      <bpmn:incoming>Flow_1r6ptoi</bpmn:incoming>
+      <bpmn:incoming>Flow_0ysoh2a</bpmn:incoming>
+      <bpmn:outgoing>Flow_1h3jr46</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_1cv12nn" name="Enter Again" camunda:assignee="${initiator}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="username" label="Имя пользователя" type="string" />
+          <camunda:formField id="password" label="Пароль" type="string" />
+          <camunda:formField id="errorMessageField" type="string" defaultValue="${errorMessage == null ? &#39;&#39; : errorMessage}">
+            <camunda:properties />
+            <camunda:validation>
+              <camunda:constraint name="readonly" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0j2rufx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ysoh2a</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="Event_1hau1rt" name="Login Error" attachedToRef="Activity_1syk2nb">
+      <bpmn:outgoing>Flow_0j2rufx</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0ma5qpg" errorRef="Error_124m2eb" camunda:errorMessageVariable="errorMessage" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1r6ptoi" sourceRef="Event_1sgk3a2" targetRef="Activity_1syk2nb" />
+    <bpmn:sequenceFlow id="Flow_0ysoh2a" sourceRef="Activity_1cv12nn" targetRef="Activity_1syk2nb" />
+    <bpmn:sequenceFlow id="Flow_0j2rufx" sourceRef="Event_1hau1rt" targetRef="Activity_1cv12nn" />
+    <bpmn:serviceTask id="Activity_18gcfi3" name="Get Listings" camunda:delegateExpression="${fetchListingsDelegate}">
+      <bpmn:incoming>Flow_1h3jr46</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cwjsxw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_0cdr596" name="Listings List" camunda:formKey="embedded:app:forms/listings-form.html" camunda:assignee="${initiator}">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1cwjsxw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wnmzv3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1cwjsxw" sourceRef="Activity_18gcfi3" targetRef="Activity_0cdr596" />
+    <bpmn:sequenceFlow id="Flow_1h3jr46" sourceRef="Activity_1syk2nb" targetRef="Activity_18gcfi3" />
+    <bpmn:sequenceFlow id="Flow_1wnmzv3" sourceRef="Activity_0cdr596" targetRef="Event_1njm3jd" />
+    <bpmn:endEvent id="Event_1njm3jd">
+      <bpmn:incoming>Flow_1wnmzv3</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1eqjcfm">
@@ -1738,6 +1796,68 @@
       <bpmndi:BPMNEdge id="Flow_1v1bu37_di" bpmnElement="Flow_1v1bu37">
         <di:waypoint x="680" y="-60" />
         <di:waypoint x="772" y="-60" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_1gtw0wo" bpmnElement="get_listings_process" isHorizontal="true">
+        <dc:Bounds x="2510" y="62" width="490" height="398" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_05l9nsj" bpmnElement="Event_1sgk3a2">
+        <dc:Bounds x="2612" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2588" y="98" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1dvpu4w" bpmnElement="Activity_1syk2nb">
+        <dc:Bounds x="2580" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0d53pvt" bpmnElement="Activity_1cv12nn">
+        <dc:Bounds x="2720" y="330" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dcdqxp_di" bpmnElement="Activity_18gcfi3">
+        <dc:Bounds x="2720" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0yqh0si" bpmnElement="Activity_0cdr596">
+        <dc:Bounds x="2860" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1njm3jd_di" bpmnElement="Event_1njm3jd">
+        <dc:Bounds x="2892" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_029a956" bpmnElement="Event_1hau1rt">
+        <dc:Bounds x="2642" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2633" y="325" width="55" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_037tm5r" bpmnElement="Flow_1r6ptoi">
+        <di:waypoint x="2630" y="158" />
+        <di:waypoint x="2630" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_0ejsw54" bpmnElement="Flow_0ysoh2a">
+        <di:waypoint x="2770" y="410" />
+        <di:waypoint x="2770" y="430" />
+        <di:waypoint x="2610" y="430" />
+        <di:waypoint x="2610" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1earwav" bpmnElement="Flow_0j2rufx">
+        <di:waypoint x="2660" y="318" />
+        <di:waypoint x="2660" y="370" />
+        <di:waypoint x="2720" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cwjsxw_di" bpmnElement="Flow_1cwjsxw">
+        <di:waypoint x="2820" y="260" />
+        <di:waypoint x="2860" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1h3jr46_di" bpmnElement="Flow_1h3jr46">
+        <di:waypoint x="2680" y="260" />
+        <di:waypoint x="2720" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wnmzv3_di" bpmnElement="Flow_1wnmzv3">
+        <di:waypoint x="2910" y="220" />
+        <di:waypoint x="2910" y="158" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
