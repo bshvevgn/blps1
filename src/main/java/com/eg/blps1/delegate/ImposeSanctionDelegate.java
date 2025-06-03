@@ -36,7 +36,7 @@ public class ImposeSanctionDelegate implements JavaDelegate {
     public void execute(DelegateExecution execution) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        String username = (String) execution.getVariable("username");
+        String username = (String) execution.getVariable("targetUsername");
         String reason = (String) execution.getVariable("reason");
         LocalDate expiresAtDate = convertToLocalDate(execution.getVariable("expiresAt"), formatter);
         Instant expiresAt = expiresAtDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
@@ -55,7 +55,7 @@ public class ImposeSanctionDelegate implements JavaDelegate {
             User user = userService.findByUsername(username);
             Sanction sanction = sanctionMapper.mapToEntity(user.getUsername(), reason, expiresAt);
             sanctionRepository.save(sanction);
-            execution.setVariable("statusMessage", "Ограничение успешно наложено");
+            execution.setVariable("statusMessage", "Ограничение успешно наложено на пользователя " + username);
         } catch (Exception e) {
             throw new BpmnError("dbError", "Ошибка при наложении санкции: " + e.getMessage());
         }
