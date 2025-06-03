@@ -15,13 +15,15 @@ class RefundUserDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-        DebitResponse response = (DebitResponse) execution.getVariable("debitResponse");
-        if (response != null) {
+        String id = (String) execution.getVariable("transactionId");
+        if (id != null) {
             try {
-                bankService.refund(response.transactionId());
+                bankService.refund(id);
             } catch (Exception e) {
                 throw new BpmnError("paymentError", "Ошибка при возврате средств");
             }
+        } else {
+            throw new BpmnError("bookingError", "Не удалось списать средства. Повторите попытку позже");
         }
     }
 }

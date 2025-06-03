@@ -25,11 +25,8 @@ public class CancelBookingDelegate implements JavaDelegate {
                     .orElseThrow(() -> new BpmnError("notFound", "Бронирование не найдено"));
 
             bookingRepository.delete(booking);
-            execution.setVariable("statusMessage", "Бронирование отменено");
-        } catch (BpmnError e) {
-            throw e;
         } catch (Exception e) {
-            throw new BpmnError("dbError", "Ошибка при отмене бронирования: " + e.getMessage());
+            throw new BpmnError("dbError", "Ошибка отмены бронирования: " + e.getMessage());
         }
     }
 }

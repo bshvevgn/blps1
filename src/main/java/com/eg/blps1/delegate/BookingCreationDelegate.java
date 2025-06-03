@@ -13,9 +13,14 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.eg.blps1.delegate.util.DateConverter.convertToLocalDate;
 
 @Component
 @RequiredArgsConstructor
@@ -28,9 +33,11 @@ public class BookingCreationDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
         try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
             Long listingId = Long.parseLong((String) execution.getVariable("listingId"));
-            LocalDate startDate = LocalDate.parse((String) execution.getVariable("startDate"));
-            LocalDate endDate = LocalDate.parse((String) execution.getVariable("endDate"));
+            LocalDate startDate = convertToLocalDate(execution.getVariable("startDate"), formatter);
+            LocalDate endDate = convertToLocalDate(execution.getVariable("endDate"), formatter);
             String cardNumber = (String) execution.getVariable("cardNumber");
             String expirationDate = (String) execution.getVariable("expirationDate");
             String cvv = (String) execution.getVariable("cvv");
@@ -52,9 +59,10 @@ public class BookingCreationDelegate implements JavaDelegate {
             if (isConflict) throw new BpmnError("bookingConflictError", "Конфликт бронирования, выберите другие даты");
 
         } catch (NumberFormatException | DateTimeParseException e) {
-            throw new BpmnError("validationError", "Неверный формат данных: " + e.getMessage());
+            throw new BpmnError("validationError", "Проверьте введённые данные");
         } catch (Exception e) {
-            throw new BpmnError("bookingError", "Не удалось проверить бронирование: " + e.getMessage());
+            throw new BpmnError("bookingError", e.getMessage());
         }
     }
 }
+
