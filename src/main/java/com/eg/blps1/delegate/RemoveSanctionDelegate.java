@@ -22,12 +22,13 @@ class RemoveSanctionDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-        String username = (String) execution.getVariable("username");
+        String username = (String) execution.getVariable("targetUsername");
 
         try {
             transactionTemplate.execute(status -> {
                 User user = userService.findByUsername(username);
                 sanctionRepository.deleteAllByUsernameAndExpiresAtAfter(user.getUsername(), Instant.now());
+                execution.setVariable("statusMessage", "Ограничения пользователя " + username + " успешно удалены");
                 return null;
             });
         } catch (Exception e) {

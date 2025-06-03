@@ -15,8 +15,13 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.eg.blps1.delegate.util.DateConverter.convertToLocalDate;
 
 @Component
 @RequiredArgsConstructor
@@ -29,16 +34,12 @@ public class ImposeSanctionDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         String username = (String) execution.getVariable("username");
         String reason = (String) execution.getVariable("reason");
-        String expiresAtStr = (String) execution.getVariable("expiresAt");
-
-        Instant expiresAt;
-        try {
-            expiresAt = Instant.parse(expiresAtStr);
-        } catch (Exception e) {
-            throw new BpmnError("validationError", "Некорректная дата истечения санкции");
-        }
+        LocalDate expiresAtDate = convertToLocalDate(execution.getVariable("expiresAt"), formatter);
+        Instant expiresAt = expiresAtDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
 
         ImposeSanctionDto dto = new ImposeSanctionDto(username, reason, expiresAt);
 
