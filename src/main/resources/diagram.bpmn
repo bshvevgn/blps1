@@ -897,7 +897,7 @@
     <bpmn:startEvent id="Event_090jwn4" name="Weekly Landlord report" camunda:asyncAfter="true" camunda:initiator="initiator">
       <bpmn:outgoing>Flow_0yb6r2p</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_06l0oar">
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0 9 * * 1</bpmn:timeCycle>
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0 9 ? * 1</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
   </bpmn:process>
