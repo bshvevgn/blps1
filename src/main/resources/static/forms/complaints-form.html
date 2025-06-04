@@ -1,9 +1,9 @@
 <form role="form">
-    <h2>Объявления</h2>
+    <h2>Жалобы</h2>
 
     <textarea
             id="listing-data"
-            cam-variable-name="listings"
+            cam-variable-name="complaints"
             cam-variable-type="String"
             style="display: none"
     ></textarea>
@@ -29,13 +29,13 @@
                 card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
 
                 const title = document.createElement('h3');
-                title.textContent = listing.address;
+                title.textContent = listing.title;
 
                 const price = document.createElement('p');
-                price.innerHTML = `<strong>${listing.price} RUB</strong>`;
+                price.innerHTML = `<strong>На: ${listing.defendant}</strong>`;
 
                 const note = document.createElement('p');
-                note.innerHTML = `<em>${listing.note}</em>`;
+                note.innerHTML = `<em>${listing.description}</em>`;
 
                 card.appendChild(title);
                 card.appendChild(price);
