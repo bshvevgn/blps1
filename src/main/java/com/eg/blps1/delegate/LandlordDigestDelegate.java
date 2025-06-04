@@ -1,4 +1,4 @@
-package com.eg.blps1.schedule;
+package com.eg.blps1.delegate;
 
 import com.eg.blps1.config.kafka.KafkaProperty;
 import com.eg.blps1.dto.DigestReportDto;
@@ -10,24 +10,24 @@ import com.eg.blps1.service.BookingService;
 import com.eg.blps1.service.KafkaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.*;
 
-@RequiredArgsConstructor
-@Service
 @Slf4j
-public class LandlordDigestSchedule {
-    private final KafkaMapper kafkaMapper;
+@Component
+@RequiredArgsConstructor
+class LandlordDigestDelegate implements JavaDelegate {
     private final BookingService bookingService;
+    private final KafkaMapper kafkaMapper;
     private final KafkaService kafkaService;
     private final KafkaProperty kafkaProperty;
 
-    @Scheduled(cron = "${scheduler.digest-report-cron}")
-//    @Scheduled(initialDelay = 1000, fixedDelay = 100000)
-    public void generateLandlordDigest() {
+    @Override
+    public void execute(DelegateExecution delegateExecution) {
         log.info("Generate landlord digest..");
         LocalDate now = LocalDate.now();
         LocalDate until = now.plusWeeks(4);

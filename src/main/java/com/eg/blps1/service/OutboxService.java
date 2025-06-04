@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,10 +24,11 @@ public class OutboxService {
     }
 
     public Outbox getScheduleActualProgressOutbox() {
-        Outbox outbox = outboxRepository.findByStatusAndRetryTimeBefore(OutboxStatus.INPROGRESS, Instant.now());
-        if (outbox == null) {
+        Optional<Outbox> outboxOpt = outboxRepository.findTop1ByStatusAndRetryTimeBefore(OutboxStatus.INPROGRESS, Instant.now());
+        if (outboxOpt.isEmpty()) {
             return null;
         }
+        Outbox outbox = outboxOpt.get();
         outbox.setRetryTime(Instant.now().plusSeconds(3600));
         outboxRepository.save(outbox);
         return outbox;

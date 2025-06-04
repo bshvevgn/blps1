@@ -61,8 +61,6 @@ security:
   token: f5fe55757d52de7095b432b04a0edd6ba322a7a832e27c4617aee8414325d4e119aff6687db964e7cdbc22ad0d61b2fa43589126196560182ff07c07628218b2
   expiration-time-ms: 172800000
 
-scheduler:
-  digest-report-cron: "0 0 0 * * 1"
 
 camunda:
   bpm:
