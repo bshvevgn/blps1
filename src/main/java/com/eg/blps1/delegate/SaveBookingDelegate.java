@@ -49,7 +49,7 @@ public class SaveBookingDelegate implements JavaDelegate {
             booking = bookingRepository.save(booking);
 
             execution.setVariable("bookingId", booking.getId());
-
+            execution.setVariable("statusMessage", "Успешное бронирование");
         } catch (Exception e) {
             try {
                 cancelBookingDelegate.execute(execution);

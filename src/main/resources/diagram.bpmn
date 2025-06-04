@@ -452,7 +452,7 @@
     <bpmn:userTask id="Activity_1su4wvq" name="Error Message" camunda:assignee="${initiator}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="statusMessageField" type="string" defaultValue="${statusMessage == null ? &#39;&#39; : statusMessage}">
+          <camunda:formField id="statusMessageField" type="string" defaultValue="${statusMessage}">
             <camunda:properties />
             <camunda:validation>
               <camunda:constraint name="readonly" config="true" />
@@ -483,7 +483,7 @@
     <bpmn:userTask id="Activity_0fslmg4" name="Success Message" camunda:assignee="${initiator}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="statusMessageField" type="string" defaultValue="${statusMessage == null ? &#39;&#39; : statusMessage}">
+          <camunda:formField id="statusMessageField" type="string" defaultValue="${statusMessage}">
             <camunda:properties />
             <camunda:validation>
               <camunda:constraint name="readonly" config="true" />
@@ -897,7 +897,7 @@
     <bpmn:startEvent id="Event_090jwn4" name="Weekly Landlord report" camunda:asyncAfter="true" camunda:initiator="initiator">
       <bpmn:outgoing>Flow_0yb6r2p</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_06l0oar">
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 * * * * ?</bpmn:timeCycle>
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0 9 * * 1</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
   </bpmn:process>

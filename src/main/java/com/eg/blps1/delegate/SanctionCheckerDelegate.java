@@ -27,6 +27,7 @@ class SanctionCheckerDelegate implements JavaDelegate {
             User user = userService.findByUsername(username);
             boolean hasSanction = !sanctionRepository.findByUsernameAndExpiresAtAfter(user.getUsername(), Instant.now()).isEmpty();
             execution.setVariable("hasSanctions", hasSanction);
+            execution.setVariable("statusMessage", "Вы не можете выполнить действие из-за наличия ограничений");
         } catch (Exception e) {
             throw new BpmnError("dbError", "Ошибка при проверке санкции: " + e.getMessage());
         }
